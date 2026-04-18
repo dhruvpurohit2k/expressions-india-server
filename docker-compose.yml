@@ -1,0 +1,6 @@
+services:
+  server:
+    build: .
+    restart: always
+    env_file: backend/.env
+    network_mode: host

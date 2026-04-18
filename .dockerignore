@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/.env
+# keep .env.production for frontend build-time config (no secrets)
+!frontend/.env.production
+backend/dev.db
+backend/data/
+backend/*.md
+frontend/.vite
+expo/
+loginImplementation
+*.md
