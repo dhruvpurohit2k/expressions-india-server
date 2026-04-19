@@ -32,5 +32,8 @@ fi
 # Substitute the domain into the HTTPS nginx config and activate it
 sed "s/\${DOMAIN}/$DOMAIN/g" /etc/nginx/nginx.https.conf > /etc/nginx/nginx.conf
 
+# Renew cert daily (certbot skips if not due)
+echo "0 0 * * * certbot renew --quiet && nginx -s reload" | crontab -
+
 echo "[entrypoint] Starting supervisor..."
 exec supervisord -c /etc/supervisord.conf
