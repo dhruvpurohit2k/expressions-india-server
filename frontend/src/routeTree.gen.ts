@@ -19,6 +19,7 @@ import { Route as AdminJournalRouteRouteImport } from './routes/admin/journal/ro
 import { Route as AdminEventRouteRouteImport } from './routes/admin/event/route'
 import { Route as AdminEnquiryRouteRouteImport } from './routes/admin/enquiry/route'
 import { Route as AdminCourseRouteRouteImport } from './routes/admin/course/route'
+import { Route as AdminCertificateApplicationRouteRouteImport } from './routes/admin/certificate-application/route'
 import { Route as AdminBrochureRouteRouteImport } from './routes/admin/brochure/route'
 import { Route as AdminAudienceRouteRouteImport } from './routes/admin/audience/route'
 import { Route as AdminArticleRouteRouteImport } from './routes/admin/article/route'
@@ -29,6 +30,7 @@ import { Route as AdminJournalIndexRouteImport } from './routes/admin/journal/in
 import { Route as AdminEventIndexRouteImport } from './routes/admin/event/index'
 import { Route as AdminEnquiryIndexRouteImport } from './routes/admin/enquiry/index'
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
+import { Route as AdminCertificateApplicationIndexRouteImport } from './routes/admin/certificate-application/index'
 import { Route as AdminBrochureIndexRouteImport } from './routes/admin/brochure/index'
 import { Route as AdminAudienceIndexRouteImport } from './routes/admin/audience/index'
 import { Route as AdminArticleIndexRouteImport } from './routes/admin/article/index'
@@ -115,6 +117,12 @@ const AdminCourseRouteRoute = AdminCourseRouteRouteImport.update({
   path: '/course',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminCertificateApplicationRouteRoute =
+  AdminCertificateApplicationRouteRouteImport.update({
+    id: '/certificate-application',
+    path: '/certificate-application',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
 const AdminBrochureRouteRoute = AdminBrochureRouteRouteImport.update({
   id: '/brochure',
   path: '/brochure',
@@ -165,6 +173,12 @@ const AdminCourseIndexRoute = AdminCourseIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminCourseRouteRoute,
 } as any)
+const AdminCertificateApplicationIndexRoute =
+  AdminCertificateApplicationIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminCertificateApplicationRouteRoute,
+  } as any)
 const AdminBrochureIndexRoute = AdminBrochureIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -341,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/admin/article': typeof AdminArticleFormLayoutRoute
   '/admin/audience': typeof AdminAudienceRouteRouteWithChildren
   '/admin/brochure': typeof AdminBrochureFormLayoutRoute
+  '/admin/certificate-application': typeof AdminCertificateApplicationRouteRouteWithChildren
   '/admin/course': typeof AdminCourseFormLayoutRoute
   '/admin/enquiry': typeof AdminEnquiryRouteRouteWithChildren
   '/admin/event': typeof AdminEventFormLayoutRoute
@@ -367,6 +382,7 @@ export interface FileRoutesByFullPath {
   '/admin/article/': typeof AdminArticleIndexRoute
   '/admin/audience/': typeof AdminAudienceIndexRoute
   '/admin/brochure/': typeof AdminBrochureIndexRoute
+  '/admin/certificate-application/': typeof AdminCertificateApplicationIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/enquiry/': typeof AdminEnquiryIndexRoute
   '/admin/event/': typeof AdminEventIndexRoute
@@ -410,6 +426,7 @@ export interface FileRoutesByTo {
   '/admin/podcast/create': typeof AdminPodcastCreateRoute
   '/admin/team': typeof AdminTeamIndexRoute
   '/admin/audience': typeof AdminAudienceIndexRoute
+  '/admin/certificate-application': typeof AdminCertificateApplicationIndexRoute
   '/admin/enquiry': typeof AdminEnquiryIndexRoute
   '/admin/almanac/edit/$id': typeof AdminAlmanacEditIdRoute
   '/admin/article/edit/$id': typeof AdminArticleEditIdRoute
@@ -429,6 +446,7 @@ export interface FileRoutesById {
   '/admin/article': typeof AdminArticleRouteRouteWithChildren
   '/admin/audience': typeof AdminAudienceRouteRouteWithChildren
   '/admin/brochure': typeof AdminBrochureRouteRouteWithChildren
+  '/admin/certificate-application': typeof AdminCertificateApplicationRouteRouteWithChildren
   '/admin/course': typeof AdminCourseRouteRouteWithChildren
   '/admin/enquiry': typeof AdminEnquiryRouteRouteWithChildren
   '/admin/event': typeof AdminEventRouteRouteWithChildren
@@ -463,6 +481,7 @@ export interface FileRoutesById {
   '/admin/article/': typeof AdminArticleIndexRoute
   '/admin/audience/': typeof AdminAudienceIndexRoute
   '/admin/brochure/': typeof AdminBrochureIndexRoute
+  '/admin/certificate-application/': typeof AdminCertificateApplicationIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/enquiry/': typeof AdminEnquiryIndexRoute
   '/admin/event/': typeof AdminEventIndexRoute
@@ -488,6 +507,7 @@ export interface FileRouteTypes {
     | '/admin/article'
     | '/admin/audience'
     | '/admin/brochure'
+    | '/admin/certificate-application'
     | '/admin/course'
     | '/admin/enquiry'
     | '/admin/event'
@@ -514,6 +534,7 @@ export interface FileRouteTypes {
     | '/admin/article/'
     | '/admin/audience/'
     | '/admin/brochure/'
+    | '/admin/certificate-application/'
     | '/admin/course/'
     | '/admin/enquiry/'
     | '/admin/event/'
@@ -557,6 +578,7 @@ export interface FileRouteTypes {
     | '/admin/podcast/create'
     | '/admin/team'
     | '/admin/audience'
+    | '/admin/certificate-application'
     | '/admin/enquiry'
     | '/admin/almanac/edit/$id'
     | '/admin/article/edit/$id'
@@ -575,6 +597,7 @@ export interface FileRouteTypes {
     | '/admin/article'
     | '/admin/audience'
     | '/admin/brochure'
+    | '/admin/certificate-application'
     | '/admin/course'
     | '/admin/enquiry'
     | '/admin/event'
@@ -609,6 +632,7 @@ export interface FileRouteTypes {
     | '/admin/article/'
     | '/admin/audience/'
     | '/admin/brochure/'
+    | '/admin/certificate-application/'
     | '/admin/course/'
     | '/admin/enquiry/'
     | '/admin/event/'
@@ -703,6 +727,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCourseRouteRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/certificate-application': {
+      id: '/admin/certificate-application'
+      path: '/certificate-application'
+      fullPath: '/admin/certificate-application'
+      preLoaderRoute: typeof AdminCertificateApplicationRouteRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/brochure': {
       id: '/admin/brochure'
       path: '/brochure'
@@ -772,6 +803,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/course/'
       preLoaderRoute: typeof AdminCourseIndexRouteImport
       parentRoute: typeof AdminCourseRouteRoute
+    }
+    '/admin/certificate-application/': {
+      id: '/admin/certificate-application/'
+      path: '/'
+      fullPath: '/admin/certificate-application/'
+      preLoaderRoute: typeof AdminCertificateApplicationIndexRouteImport
+      parentRoute: typeof AdminCertificateApplicationRouteRoute
     }
     '/admin/brochure/': {
       id: '/admin/brochure/'
@@ -1089,6 +1127,21 @@ const AdminBrochureRouteRouteChildren: AdminBrochureRouteRouteChildren = {
 const AdminBrochureRouteRouteWithChildren =
   AdminBrochureRouteRoute._addFileChildren(AdminBrochureRouteRouteChildren)
 
+interface AdminCertificateApplicationRouteRouteChildren {
+  AdminCertificateApplicationIndexRoute: typeof AdminCertificateApplicationIndexRoute
+}
+
+const AdminCertificateApplicationRouteRouteChildren: AdminCertificateApplicationRouteRouteChildren =
+  {
+    AdminCertificateApplicationIndexRoute:
+      AdminCertificateApplicationIndexRoute,
+  }
+
+const AdminCertificateApplicationRouteRouteWithChildren =
+  AdminCertificateApplicationRouteRoute._addFileChildren(
+    AdminCertificateApplicationRouteRouteChildren,
+  )
+
 interface AdminCourseRouteRouteChildren {
   AdminCourseIdRoute: typeof AdminCourseIdRoute
   AdminCourseFormLayoutRoute: typeof AdminCourseFormLayoutRoute
@@ -1200,6 +1253,7 @@ interface AdminRouteRouteChildren {
   AdminArticleRouteRoute: typeof AdminArticleRouteRouteWithChildren
   AdminAudienceRouteRoute: typeof AdminAudienceRouteRouteWithChildren
   AdminBrochureRouteRoute: typeof AdminBrochureRouteRouteWithChildren
+  AdminCertificateApplicationRouteRoute: typeof AdminCertificateApplicationRouteRouteWithChildren
   AdminCourseRouteRoute: typeof AdminCourseRouteRouteWithChildren
   AdminEnquiryRouteRoute: typeof AdminEnquiryRouteRouteWithChildren
   AdminEventRouteRoute: typeof AdminEventRouteRouteWithChildren
@@ -1214,6 +1268,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminArticleRouteRoute: AdminArticleRouteRouteWithChildren,
   AdminAudienceRouteRoute: AdminAudienceRouteRouteWithChildren,
   AdminBrochureRouteRoute: AdminBrochureRouteRouteWithChildren,
+  AdminCertificateApplicationRouteRoute:
+    AdminCertificateApplicationRouteRouteWithChildren,
   AdminCourseRouteRoute: AdminCourseRouteRouteWithChildren,
   AdminEnquiryRouteRoute: AdminEnquiryRouteRouteWithChildren,
   AdminEventRouteRoute: AdminEventRouteRouteWithChildren,

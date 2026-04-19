@@ -56,3 +56,7 @@ export const brochureKeys = {
   list: (params: Record<string, unknown>) => [...brochureKeys.all, "list", params] as const,
   detail: (id: string) => [...brochureKeys.all, id] as const,
 };
+
+export const certApplicationKeys = {
+  all: ["certificate-application"] as const,
+};

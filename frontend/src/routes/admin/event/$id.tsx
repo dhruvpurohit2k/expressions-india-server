@@ -106,9 +106,15 @@ function RouteComponent() {
     return (
       <div className="flex h-64 flex-col items-center justify-center gap-3">
         <p className="text-muted-foreground">
-          {is404 ? "Event not found." : ((error as Error)?.message ?? "Something went wrong.")}
+          {is404
+            ? "Event not found."
+            : ((error as Error)?.message ?? "Something went wrong.")}
         </p>
-        <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/admin/event" })}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate({ to: "/admin/event" })}
+        >
           <ArrowLeft className="mr-1.5 size-4" />
           Back to Events
         </Button>
@@ -187,7 +193,7 @@ function RouteComponent() {
           </InfoCard>
 
           {event.perks.length > 0 && (
-            <InfoCard label="Perks">
+            <InfoCard label="Details">
               <ul className="space-y-1">
                 {event.perks.map((perk, i) => (
                   <li key={i} className="flex gap-2">
@@ -375,33 +381,35 @@ function RouteComponent() {
             </InfoCard>
           )}
 
-          {event.status === "upcoming" && event.promotionalDocuments.length > 0 && (
-            <InfoCard label="Promotional Documents">
-              <ul className="space-y-2">
-                {event.promotionalDocuments.map((doc) => (
-                  <li key={doc.id} className="flex items-center gap-2">
-                    <FileText className="size-4 shrink-0 text-muted-foreground" />
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary underline underline-offset-4 hover:text-primary/80"
-                    >
-                      {doc.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </InfoCard>
-          )}
+          {event.status === "upcoming" &&
+            event.promotionalDocuments.length > 0 && (
+              <InfoCard label="Promotional Documents">
+                <ul className="space-y-2">
+                  {event.promotionalDocuments.map((doc) => (
+                    <li key={doc.id} className="flex items-center gap-2">
+                      <FileText className="size-4 shrink-0 text-muted-foreground" />
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline underline-offset-4 hover:text-primary/80"
+                      >
+                        {doc.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </InfoCard>
+            )}
 
-          {event.status === "completed" && event.promotionalVideoLinks.length > 0 && (
-            <InfoCard label="Promotional Video Links">
-              {event.promotionalVideoLinks.map((link) => (
-                <p key={link.id}>{link.url}</p>
-              ))}
-            </InfoCard>
-          )}
+          {event.status === "completed" &&
+            event.promotionalVideoLinks.length > 0 && (
+              <InfoCard label="Promotional Video Links">
+                {event.promotionalVideoLinks.map((link) => (
+                  <p key={link.id}>{link.url}</p>
+                ))}
+              </InfoCard>
+            )}
         </div>
       </div>
     </div>

@@ -34,7 +34,7 @@ func (s *Service) GetUpcomingEvents(limit int, offset int) ([]dto.EventListItemD
 
 	base := s.db.Model(&models.Event{}).
 		Where("status = ?", "upcoming").
-		Where("start_date >= ?", time.Now())
+		Where("start_date >= ?", time.Now().Truncate(24*time.Hour))
 
 	if err := base.Count(&total).Error; err != nil {
 		return nil, 0, err

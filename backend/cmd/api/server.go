@@ -10,6 +10,7 @@ import (
 
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/almanac"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/article"
+	certificateapplication "github.com/dhruvpurohit2k/expressions-india-backend/internal/certificateapplication"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/audience"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/auth"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/brochure"
@@ -47,8 +48,9 @@ type Server struct {
 	authController           *auth.Controller
 	teamController           *team.Controller
 	uploadController         *upload.Controller
-	almanacController        *almanac.Controller
-	brochureController       *brochure.Controller
+	almanacController                *almanac.Controller
+	brochureController               *brochure.Controller
+	certificateApplicationController *certificateapplication.Controller
 }
 
 func initServer() *Server {
@@ -95,6 +97,7 @@ func initServer() *Server {
 		&models.Member{},
 		&models.Almanac{},
 		&models.Brochure{},
+		&models.CertificateApplication{},
 	)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -144,6 +147,9 @@ func initServer() *Server {
 	brochureService := brochure.NewService(db, s3)
 	brochureController := brochure.NewController(brochureService)
 
+	certAppService := certificateapplication.NewService(db)
+	certAppController := certificateapplication.NewController(certAppService)
+
 	r := gin.Default()
 	corsConfig := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -179,8 +185,9 @@ func initServer() *Server {
 		authController:           authController,
 		teamController:           teamController,
 		uploadController:         uploadController,
-		almanacController:        almanacController,
-		brochureController:       brochureController,
+		almanacController:                almanacController,
+		brochureController:               brochureController,
+		certificateApplicationController: certAppController,
 	}
 }
 
@@ -273,6 +280,12 @@ func (s *Server) SetupRoutes() {
 		groupAdmin.POST("/brochure", s.brochureController.Create)
 		groupAdmin.PUT("/brochure/:id", s.brochureController.Update)
 		groupAdmin.DELETE("/brochure/:id", s.brochureController.Delete)
+
+		groupAdmin.GET("/certificate-application", s.certificateApplicationController.GetAll)
+		groupAdmin.GET("/certificate-application/:id", s.certificateApplicationController.GetByID)
+		groupAdmin.POST("/certificate-application", s.certificateApplicationController.Create)
+		groupAdmin.PUT("/certificate-application/:id", s.certificateApplicationController.Update)
+		groupAdmin.DELETE("/certificate-application/:id", s.certificateApplicationController.Delete)
 	}
 	groupApi := s.r.Group("/api")
 	{
@@ -295,6 +308,7 @@ func (s *Server) SetupRoutes() {
 		groupApi.GET("/audience/:name", s.audienceController.GetAudienceByName)
 		groupApi.GET("/latest-activity", s.latestActivityController.GetLatestActivity)
 		groupApi.GET("/course", s.courseController.GetCoursesList)
+		groupApi.GET("/course/my", auth.RequireAuth(), s.courseController.GetMyCourses)
 		groupApi.GET("/course/audience/:audience", s.courseController.GetCoursesByAudience)
 		groupApi.GET("/course/:id", s.courseController.GetCourseById)
 		groupApi.GET("/course/:id/chapter/:chapterId", auth.TryExtractClaims(), s.courseController.GetChapterById)
@@ -306,6 +320,8 @@ func (s *Server) SetupRoutes() {
 
 		groupApi.GET("/brochure", s.brochureController.GetList)
 		groupApi.GET("/brochure/:id", s.brochureController.GetById)
+
+		groupApi.GET("/certificate-application", s.certificateApplicationController.GetPublic)
 	}
 
 }

@@ -290,6 +290,38 @@ func (s *Service) RevokeAccess(courseId, userId string) error {
 	return s.db.Model(&course).Association("Users").Delete(&models.User{ID: userId})
 }
 
+// GetEnrolledCourses returns all courses a user is enrolled in.
+func (s *Service) GetEnrolledCourses(userID string) ([]dto.CourseListItemDTO, error) {
+	var courses []models.Course
+	err := s.db.
+		Joins("JOIN course_users ON course_users.course_id = courses.id").
+		Where("course_users.user_id = ?", userID).
+		Preload("Audiences").
+		Preload("Thumbnail").
+		Find(&courses).Error
+	if err != nil {
+		return nil, err
+	}
+	result := make([]dto.CourseListItemDTO, 0, len(courses))
+	for _, course := range courses {
+		item := dto.CourseListItemDTO{
+			ID:        course.ID,
+			Title:     course.Title,
+			CreatedAt: course.CreatedAt,
+			UpdatedAt: course.UpdatedAt,
+			Audiences: make([]string, 0, len(course.Audiences)),
+		}
+		if course.ThumbnailID != "" {
+			item.ThumbnailURL = &course.Thumbnail.URL
+		}
+		for _, a := range course.Audiences {
+			item.Audiences = append(item.Audiences, a.Name)
+		}
+		result = append(result, item)
+	}
+	return result, nil
+}
+
 // IsEnrolled reports whether userId is enrolled in courseId via the course_users join table.
 func (s *Service) IsEnrolled(courseId, userId string) (bool, error) {
 	var count int64

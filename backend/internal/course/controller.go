@@ -38,6 +38,20 @@ func (ctrl *Controller) GetCoursesListAdmin(c *gin.Context) {
 	})
 }
 
+func (ctrl *Controller) GetMyCourses(c *gin.Context) {
+	claims := auth.GetClaims(c)
+	if claims == nil {
+		utils.Fail(c, http.StatusUnauthorized, "UNAUTHORIZED", "Sign in to view enrolled courses")
+		return
+	}
+	courses, err := ctrl.service.GetEnrolledCourses(claims.UserID)
+	if err != nil {
+		utils.FailInternal(c, "FETCH_ERROR", "Failed to fetch enrolled courses", err)
+		return
+	}
+	utils.OK(c, courses)
+}
+
 func (ctrl *Controller) GetCoursesList(c *gin.Context) {
 	var filter utils.CourseFilter
 	if err := c.ShouldBindQuery(&filter); err != nil {

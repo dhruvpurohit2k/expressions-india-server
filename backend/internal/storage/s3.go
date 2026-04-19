@@ -26,7 +26,16 @@ type S3 struct {
 	Bucket string
 }
 
+func isDev() bool {
+	return os.Getenv("APP_ENV") == "development"
+}
+
 func bucketName() string {
+	if isDev() {
+		if b := os.Getenv("DEV_S3_BUCKET"); b != "" {
+			return b
+		}
+	}
 	if b := os.Getenv("S3_BUCKET"); b != "" {
 		return b
 	}
@@ -37,7 +46,13 @@ func InitS3() *S3 {
 	var cfg aws.Config
 	var err error
 
-	if endpoint := os.Getenv("S3_ENDPOINT"); endpoint != "" {
+	// In development, DEV_S3_URL acts as the Minio endpoint.
+	endpoint := os.Getenv("S3_ENDPOINT")
+	if isDev() && endpoint == "" {
+		endpoint = os.Getenv("DEV_S3_URL")
+	}
+
+	if endpoint != "" {
 		// Local dev / Minio: use custom endpoint + static credentials.
 		resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, option ...any) (aws.Endpoint, error) {
 			return aws.Endpoint{
@@ -45,10 +60,20 @@ func InitS3() *S3 {
 				SigningRegion: os.Getenv("S3_REGION"),
 			}, nil
 		})
+		username := os.Getenv("S3_USERNAME")
+		password := os.Getenv("S3_PASSWORD")
+		if isDev() {
+			if u := os.Getenv("DEV_S3_USERNAME"); u != "" {
+				username = u
+			}
+			if p := os.Getenv("DEV_S3_PASSWORD"); p != "" {
+				password = p
+			}
+		}
 		cfg, err = config.LoadDefaultConfig(context.TODO(),
 			config.WithEndpointResolverWithOptions(resolver),
 			config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-				os.Getenv("S3_USERNAME"), os.Getenv("S3_PASSWORD"), os.Getenv("S3_SESSION"),
+				username, password, os.Getenv("S3_SESSION"),
 			)),
 		)
 	} else {
@@ -67,7 +92,7 @@ func InitS3() *S3 {
 		return nil
 	}
 
-	usePathStyle := os.Getenv("S3_ENDPOINT") != ""
+	usePathStyle := endpoint != ""
 	return &S3{
 		Bucket: bucketName(),
 		S3: s3.NewFromConfig(cfg, func(o *s3.Options) {
@@ -179,6 +204,10 @@ func (s *S3) PresignUpload(id, contentType string, ttl time.Duration) (presigned
 // For real AWS the URL is served via CloudFront: https://<domain>/<key>.
 // For Minio the URL includes the bucket: http://<host>/<bucket>/<key>.
 func (s *S3) PublicURL(id string) string {
+	if isDev() {
+		base := strings.TrimRight(os.Getenv("DEV_S3_URL"), "/")
+		return fmt.Sprintf("%s/%s/%s", base, s.Bucket, id)
+	}
 	base := strings.TrimRight(os.Getenv("S3_URL"), "/")
 	if os.Getenv("S3_ENDPOINT") != "" {
 		return fmt.Sprintf("%s/%s/%s", base, s.Bucket, id)

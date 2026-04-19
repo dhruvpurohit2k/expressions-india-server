@@ -18,6 +18,7 @@ import {
   Newspaper,
   ScrollText,
   UsersRound,
+  Award,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -30,6 +31,7 @@ const NAV_ITEMS = [
   { label: "Articles", icon: Newspaper, to: "/admin/article" as const },
   { label: "Audience", icon: Users, to: "/admin/audience" as const },
   { label: "Team", icon: UsersRound, to: "/admin/team" as const },
+  { label: "Cert Application", icon: Award, to: "/admin/certificate-application" as const },
 ] as const;
 
 export default function AppSidebar() {

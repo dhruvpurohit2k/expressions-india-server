@@ -97,16 +97,25 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex px-2 lg:px-10 items-center">
+      <div className="flex px-2 lg:px-10 items-center gap-2">
         <H1>Courses</H1>
-        <Button
-          variant="default"
-          className="ml-auto rounded shadow font-semibold"
-          onClick={() => navigate({ to: "/admin/course/create" })}
-        >
-          <Plus strokeWidth={2} className="size-4" />
-          New Course
-        </Button>
+        <div className="ml-auto flex gap-2">
+          <Button
+            variant="outline"
+            className="rounded shadow font-semibold"
+            onClick={() => navigate({ to: "/admin/certificate-application" })}
+          >
+            Certificate Application
+          </Button>
+          <Button
+            variant="default"
+            className="rounded shadow font-semibold"
+            onClick={() => navigate({ to: "/admin/course/create" })}
+          >
+            <Plus strokeWidth={2} className="size-4" />
+            New Course
+          </Button>
+        </div>
       </div>
 
       <div className="px-2 lg:px-10 space-y-4">

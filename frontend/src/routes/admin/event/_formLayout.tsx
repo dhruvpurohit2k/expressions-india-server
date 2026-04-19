@@ -81,7 +81,9 @@ function DocumentList({
                       className="h-7 text-sm"
                     />
                     {doc.file ? (
-                      <p className="text-xs text-muted-foreground truncate">{doc.file.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {doc.file.name}
+                      </p>
                     ) : (
                       <label className="cursor-pointer text-xs text-primary underline">
                         Choose file
@@ -120,7 +122,9 @@ function DocumentList({
         type="button"
         variant="outline"
         size="sm"
-        onClick={() => onChange([...docs, { type: "new", name: "", file: null }])}
+        onClick={() =>
+          onChange([...docs, { type: "new", name: "", file: null }])
+        }
       >
         <Plus className="mr-1.5 size-3.5" />
         Add Document
@@ -172,7 +176,9 @@ export function EventForm({ event }: { event?: EventData }) {
     name: m.name,
   }));
 
-  const existingPromotionalDocuments: DocEntry[] = (event?.promotionalDocuments ?? []).map((m) => ({
+  const existingPromotionalDocuments: DocEntry[] = (
+    event?.promotionalDocuments ?? []
+  ).map((m) => ({
     type: "existing",
     id: m.id,
     url: m.url,
@@ -268,7 +274,8 @@ export function EventForm({ event }: { event?: EventData }) {
         );
 
         const newPromoDocs = value.promotionalDocuments.filter(
-          (d): d is Extract<DocEntry, { type: "new" }> => d.type === "new" && d.file !== null,
+          (d): d is Extract<DocEntry, { type: "new" }> =>
+            d.type === "new" && d.file !== null,
         );
         if (newPromoDocs.length > 0) {
           const refs = await presignAndUploadFiles(
@@ -295,7 +302,8 @@ export function EventForm({ event }: { event?: EventData }) {
         }
 
         const newDocs = value.documents.filter(
-          (d): d is Extract<DocEntry, { type: "new" }> => d.type === "new" && d.file !== null,
+          (d): d is Extract<DocEntry, { type: "new" }> =>
+            d.type === "new" && d.file !== null,
         );
         if (newDocs.length > 0) {
           const refs = await presignAndUploadFiles(
@@ -439,17 +447,19 @@ export function EventForm({ event }: { event?: EventData }) {
               name="perks"
               children={(field) => (
                 <div className="space-y-2">
-                  <Label>Perks</Label>
+                  <Label>Details</Label>
                   {field.state.value.map((perk, index) => (
                     <div key={index} className="flex gap-2">
-                      <Input
+                      <Textarea
                         value={perk}
                         onChange={(e) => {
                           const updated = [...field.state.value];
                           updated[index] = e.target.value;
                           field.handleChange(updated);
                         }}
-                        placeholder="Enter a perk..."
+                        placeholder="Enter a detail..."
+                        rows={2}
+                        className="resize-none"
                       />
                       <Button
                         type="button"
@@ -475,7 +485,7 @@ export function EventForm({ event }: { event?: EventData }) {
                     }
                   >
                     <Plus className="mr-1.5 size-3.5" />
-                    Add Perk
+                    Add Detail
                   </Button>
                 </div>
               )}
@@ -960,8 +970,13 @@ export function EventForm({ event }: { event?: EventData }) {
                           docs={field.state.value}
                           onChange={field.handleChange}
                           onDelete={(id) => {
-                            const current = form.getFieldValue("deletedPromotionalDocumentIds");
-                            form.setFieldValue("deletedPromotionalDocumentIds", [...current, id]);
+                            const current = form.getFieldValue(
+                              "deletedPromotionalDocumentIds",
+                            );
+                            form.setFieldValue(
+                              "deletedPromotionalDocumentIds",
+                              [...current, id],
+                            );
                           }}
                         />
                       )}
@@ -1082,8 +1097,12 @@ export function EventForm({ event }: { event?: EventData }) {
                           docs={field.state.value}
                           onChange={field.handleChange}
                           onDelete={(id) => {
-                            const current = form.getFieldValue("deletedDocumentIds");
-                            form.setFieldValue("deletedDocumentIds", [...current, id]);
+                            const current =
+                              form.getFieldValue("deletedDocumentIds");
+                            form.setFieldValue("deletedDocumentIds", [
+                              ...current,
+                              id,
+                            ]);
                           }}
                         />
                       )}

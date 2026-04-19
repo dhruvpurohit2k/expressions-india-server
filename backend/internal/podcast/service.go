@@ -12,12 +12,19 @@ type Service struct {
 	db *gorm.DB
 }
 
+func normalizeTags(raw string) datatypes.JSON {
+	if raw == "" {
+		return datatypes.JSON("[]")
+	}
+	return datatypes.JSON(raw)
+}
+
 func (s *Service) CreatePodcast(o *dto.PodcastCreateDTO) error {
 	podcast := models.Podcast{
 		Title:       o.Title,
 		Link:        o.Link,
 		Description: &o.Description,
-		Tags:        datatypes.JSON(o.Tags),
+		Tags:        normalizeTags(o.Tags),
 		Transcript:  o.Transcript,
 	}
 	if len(o.Audiences) > 0 {
@@ -96,7 +103,7 @@ func (s *Service) UpdatePodcast(id string, req *dto.PodcastUpdateDTO) error {
 	podcast.Title = req.Title
 	podcast.Link = req.Link
 	podcast.Description = &req.Description
-	podcast.Tags = datatypes.JSON(req.Tags)
+	podcast.Tags = normalizeTags(req.Tags)
 	podcast.Transcript = req.Transcript
 
 	var audiences []models.Audience
