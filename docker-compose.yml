@@ -4,3 +4,11 @@ services:
     restart: always
     env_file: backend/.env
     network_mode: host
+    environment:
+      DOMAIN: "13.206.10.230.nip.io"
+      CERTBOT_EMAIL: "expressionsindia.app@gmail.com"
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+
+volumes:
+  letsencrypt:
