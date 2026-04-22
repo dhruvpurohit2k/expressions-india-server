@@ -370,7 +370,7 @@ export function EventForm({ event }: { event?: EventData }) {
               }}
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Title</Label>
+                  <Label htmlFor={field.name}>Title <span className="text-destructive">*</span></Label>
                   <Input
                     id={field.name}
                     value={field.state.value}
@@ -526,7 +526,7 @@ export function EventForm({ event }: { event?: EventData }) {
 
                 return (
                   <div className="space-y-2">
-                    <Label>Target Audience</Label>
+                    <Label>Target Audience <span className="text-destructive">*</span></Label>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded border p-3">
                       {INDIVIDUAL_AUDIENCES.map((option) => (
                         <div key={option} className="flex items-center gap-2">
@@ -574,7 +574,7 @@ export function EventForm({ event }: { event?: EventData }) {
                 name="startDate"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label>Start Date</Label>
+                    <Label>Start Date <span className="text-destructive">*</span></Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -720,7 +720,7 @@ export function EventForm({ event }: { event?: EventData }) {
                     onChange={(e) => field.handleChange(e.target.checked)}
                     className="size-4 accent-primary"
                   />
-                  <Label htmlFor={field.name}>Online Event</Label>
+                  <Label htmlFor={field.name}>Online Event <span className="text-destructive">*</span></Label>
                 </div>
               )}
             />
@@ -761,7 +761,7 @@ export function EventForm({ event }: { event?: EventData }) {
                     onChange={(e) => field.handleChange(e.target.checked)}
                     className="size-4 accent-primary"
                   />
-                  <Label htmlFor={field.name}>Paid Event</Label>
+                  <Label htmlFor={field.name}>Paid Event <span className="text-destructive">*</span></Label>
                 </div>
               )}
             />
@@ -826,7 +826,7 @@ export function EventForm({ event }: { event?: EventData }) {
               name="status"
               children={(field) => (
                 <div className="space-y-2">
-                  <Label>Status</Label>
+                  <Label>Status <span className="text-destructive">*</span></Label>
                   <div className="flex overflow-hidden rounded border">
                     {(["upcoming", "completed"] as const).map((s) => (
                       <button
