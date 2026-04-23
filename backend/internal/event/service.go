@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/dto"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/models"
@@ -33,14 +32,13 @@ func (s *Service) GetUpcomingEvents(limit int, offset int) ([]dto.EventListItemD
 	var total int64
 
 	base := s.db.Model(&models.Event{}).
-		Where("status = ?", "upcoming").
-		Where("start_date >= ?", time.Now().Truncate(24*time.Hour))
+		Where("status = ?", "upcoming")
 
 	if err := base.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	if err := base.Preload("Thumbnail").Order("start_date ASC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
+	if err := base.Preload("Thumbnail").Order("start_date ASC NULLS LAST").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
 		return nil, 0, err
 	}
 

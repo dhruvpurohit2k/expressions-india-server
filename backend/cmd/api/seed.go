@@ -69,7 +69,11 @@ func SeedDBWithEvent(s *Server, filepath string) error {
 			}
 		}
 
-		startDate, _ := time.Parse("2006-01-02", d.StartDate)
+		var startDate *time.Time
+		if d.StartDate != "" {
+			parsed, _ := time.Parse("2006-01-02", d.StartDate)
+			startDate = &parsed
+		}
 		var endDate *time.Time
 		if d.EndDate != nil {
 			endDateParsed, _ := time.Parse("2006-01-02", *d.EndDate)

@@ -12,7 +12,7 @@ type EventListItemDTO struct {
 	Status       string     `json:"status"`
 	IsOnline     bool       `json:"isOnline"`
 	IsPaid       bool       `json:"isPaid"`
-	StartDate    time.Time  `json:"startDate"`
+	StartDate    *time.Time `json:"startDate"`
 	EndDate      *time.Time `json:"endDate"`
 	ThumbnailURL *string    `json:"thumbnailUrl"`
 }
@@ -25,7 +25,7 @@ type EventCreateRequestDTO struct {
 	Title                 string     `form:"title" binding:"required"`
 	Description           string     `form:"description"`
 	Perks                 string     `form:"perks"`
-	StartDate             time.Time  `form:"startDate" binding:"required"`
+	StartDate             *time.Time `form:"startDate"`
 	EndDate               *time.Time `form:"endDate"`
 	StartTime             *string    `form:"startTime"`
 	EndTime               *string    `form:"endTime"`
@@ -50,7 +50,7 @@ type EventUpdateRequestDTO struct {
 	Title                      string     `form:"title" binding:"required"`
 	Description                string     `form:"description"`
 	Perks                      string     `form:"perks"`
-	StartDate                  time.Time  `form:"startDate" binding:"required"`
+	StartDate                  *time.Time `form:"startDate"`
 	EndDate                    *time.Time `form:"endDate"`
 	StartTime                  *string    `form:"startTime"`
 	EndTime                    *string    `form:"endTime"`

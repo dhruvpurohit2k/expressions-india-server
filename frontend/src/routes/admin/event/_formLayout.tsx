@@ -574,7 +574,7 @@ export function EventForm({ event }: { event?: EventData }) {
                 name="startDate"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label>Start Date <span className="text-destructive">*</span></Label>
+                    <Label>Start Date</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -598,6 +598,13 @@ export function EventForm({ event }: { event?: EventData }) {
                           onSelect={field.handleChange}
                           autoFocus
                         />
+                        {field.state.value && (
+                          <div className="p-2 border-t">
+                            <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => field.handleChange(undefined)}>
+                              Clear
+                            </Button>
+                          </div>
+                        )}
                       </PopoverContent>
                     </Popover>
                   </div>
@@ -641,6 +648,13 @@ export function EventForm({ event }: { event?: EventData }) {
                           onSelect={field.handleChange}
                           autoFocus
                         />
+                        {field.state.value && (
+                          <div className="p-2 border-t">
+                            <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => field.handleChange(undefined)}>
+                              Clear
+                            </Button>
+                          </div>
+                        )}
                       </PopoverContent>
                     </Popover>
                     {field.state.meta.errors.length > 0 && (
@@ -664,12 +678,19 @@ export function EventForm({ event }: { event?: EventData }) {
                 children={(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>Start Time</Label>
-                    <Input
-                      id={field.name}
-                      type="time"
-                      value={field.state.value ?? ""}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id={field.name}
+                        type="time"
+                        value={field.state.value ?? ""}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      {field.state.value && (
+                        <Button type="button" variant="ghost" size="icon" onClick={() => field.handleChange("")}>
+                          <X className="size-4 text-muted-foreground" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 )}
               />
@@ -688,12 +709,19 @@ export function EventForm({ event }: { event?: EventData }) {
                 children={(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>End Time</Label>
-                    <Input
-                      id={field.name}
-                      type="time"
-                      value={field.state.value ?? ""}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id={field.name}
+                        type="time"
+                        value={field.state.value ?? ""}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      {field.state.value && (
+                        <Button type="button" variant="ghost" size="icon" onClick={() => field.handleChange("")}>
+                          <X className="size-4 text-muted-foreground" />
+                        </Button>
+                      )}
+                    </div>
                     {field.state.meta.errors.length > 0 && (
                       <p className="text-xs text-destructive">
                         {field.state.meta.errors

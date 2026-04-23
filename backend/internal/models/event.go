@@ -13,7 +13,7 @@ type Event struct {
 	Title                 string         `gorm:"type:varchar(255);not null" json:"title"`
 	Description           string         `gorm:"type:text" json:"description"`
 	Perks                 datatypes.JSON `json:"perks"`
-	StartDate             time.Time      `gorm:"not null" json:"startDate"`
+	StartDate             *time.Time     `json:"startDate"`
 	EndDate               *time.Time     `json:"endDate"`
 	StartTime             *string        `json:"startTime"`
 	EndTime               *string        `json:"endTime"`
