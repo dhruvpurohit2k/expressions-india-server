@@ -164,11 +164,7 @@ func initServer() *Server {
 		}
 		corsConfig.AllowOrigins = parts
 	} else {
-		appEnv := os.Getenv("APP_ENV")
-		if appEnv != "dev" && appEnv != "development" {
-			log.Fatal("ALLOWED_ORIGINS must be set in non-development environments")
-		}
-		// Dev fallback: allow common local dev servers.
+		// Fallback: allow common local dev servers.
 		corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:8081"}
 	}
 	r.Use(cors.New(corsConfig))
