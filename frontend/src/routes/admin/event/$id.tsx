@@ -288,7 +288,7 @@ function RouteComponent() {
                 <div>
                   <p className="text-xs text-muted-foreground">Start</p>
                   <p className="font-medium">
-                    {format(event.startDate, "PPP")}
+                    {event.startDate ? format(event.startDate, "PPP") : "—"}
                   </p>
                 </div>
               </div>

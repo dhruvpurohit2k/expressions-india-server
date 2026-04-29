@@ -24,6 +24,7 @@ import {
   SingleMediaUpload,
 } from "#/components/media-upload";
 import type { Journal } from "#/features/journal/types";
+import { presignAndUploadFiles } from "#/lib/presign";
 import { useRef } from "react";
 
 export const Route = createFileRoute("/admin/journal/_formLayout")({
@@ -164,6 +165,20 @@ export function JournalForm({ journal }: { journal?: Journal }) {
       deletedChapterIds: [] as string[],
     },
     onSubmit: async ({ value }) => {
+      // Collect all new files to presign in one batch
+      const filesToUpload: Array<{ file: File; name: string }> = [];
+      const coverIdx = value.coverMedia?.type === "new"
+        ? (filesToUpload.push({ file: value.coverMedia.file, name: value.coverMedia.file.name }) - 1)
+        : -1;
+      const chapterMediaIdxs = value.chapters.map((ch) => {
+        if (ch.media?.type === "new") {
+          return filesToUpload.push({ file: ch.media.file, name: ch.media.file.name }) - 1;
+        }
+        return -1;
+      });
+
+      const refs = await presignAndUploadFiles(filesToUpload);
+
       const fd = new FormData();
       fd.append("title", value.title);
       if (value.description) fd.append("description", value.description);
@@ -174,29 +189,23 @@ export function JournalForm({ journal }: { journal?: Journal }) {
       if (value.year != null) fd.append("year", String(value.year));
 
       // Cover media
-      if (value.coverMedia?.type === "new") {
-        fd.append("coverMedia", value.coverMedia.file);
+      if (coverIdx >= 0) {
+        fd.append("coverMediaUpload", JSON.stringify(refs[coverIdx]));
       }
       if (value.deletedCoverMediaId) {
         fd.append("deletedCoverMediaId", value.deletedCoverMediaId);
       }
 
-      // Chapters metadata (JSON) + files indexed
-      const chaptersMeta = value.chapters.map((ch, i) => ({
+      // Chapters: include mediaUpload ref inline in the JSON
+      const chaptersPayload = value.chapters.map((ch, i) => ({
         id: ch.id,
         title: ch.title,
         description: ch.description,
         authors: ch.authors.filter((a) => a.trim() !== ""),
         deletedMediaId: ch.deletedMediaId,
-        hasNewMedia: ch.media?.type === "new",
+        mediaUpload: chapterMediaIdxs[i] >= 0 ? refs[chapterMediaIdxs[i]] : null,
       }));
-      fd.append("chapters", JSON.stringify(chaptersMeta));
-
-      value.chapters.forEach((ch, i) => {
-        if (ch.media?.type === "new") {
-          fd.append(`chapterMedia_${i}`, ch.media.file);
-        }
-      });
+      fd.append("chapters", JSON.stringify(chaptersPayload));
 
       if (value.deletedChapterIds.length) {
         fd.append("deletedChapterIds", JSON.stringify(value.deletedChapterIds));
@@ -246,7 +255,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
               name="title"
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Title</Label>
+                  <Label htmlFor={field.name}>Title <span className="text-destructive">*</span></Label>
                   <Input
                     id={field.name}
                     value={field.state.value}
@@ -282,7 +291,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
                 name="volume"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label htmlFor={field.name}>Volume</Label>
+                    <Label htmlFor={field.name}>Volume <span className="text-destructive">*</span></Label>
                     <Input
                       id={field.name}
                       type="number"
@@ -303,7 +312,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
                 name="issue"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label htmlFor={field.name}>Issue</Label>
+                    <Label htmlFor={field.name}>Issue <span className="text-destructive">*</span></Label>
                     <Input
                       id={field.name}
                       type="number"
@@ -328,7 +337,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
                 name="startMonth"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label>Start Month</Label>
+                    <Label>Start Month <span className="text-destructive">*</span></Label>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
@@ -351,7 +360,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
                 name="endMonth"
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label>End Month</Label>
+                    <Label>End Month <span className="text-destructive">*</span></Label>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
@@ -377,7 +386,7 @@ export function JournalForm({ journal }: { journal?: Journal }) {
               name="year"
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Year</Label>
+                  <Label htmlFor={field.name}>Year <span className="text-destructive">*</span></Label>
                   <Input
                     id={field.name}
                     type="number"

@@ -223,7 +223,7 @@ export function CourseForm({ course }: { course?: CourseData }) {
                 }}
                 children={(field) => (
                   <div className="space-y-1.5">
-                    <Label htmlFor={field.name}>Title</Label>
+                    <Label htmlFor={field.name}>Title <span className="text-destructive">*</span></Label>
                     <Input
                       id={field.name}
                       value={field.state.value}

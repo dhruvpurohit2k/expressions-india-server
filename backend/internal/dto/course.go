@@ -38,6 +38,10 @@ type CourseChapterDTO struct {
 	DownloadableContent []CourseMediaDTO `json:"downloadableContent"`
 }
 
+// CourseChapterAdminDTO is the same as CourseChapterDTO — used in the admin
+// course detail response so the form can edit description, video URL, and docs.
+type CourseChapterAdminDTO = CourseChapterDTO
+
 type CourseDTO struct {
 	ID                   string                    `json:"id"`
 	Title                string                    `json:"title"`
@@ -50,6 +54,22 @@ type CourseDTO struct {
 	Chapters             []CourseChapterSummaryDTO `json:"chapters"`
 	CreatedAt            time.Time                 `json:"createdAt"`
 	UpdatedAt            time.Time                 `json:"updatedAt"`
+}
+
+// CourseAdminDTO is identical to CourseDTO but with full chapter data so the
+// admin form can edit description, video URL, and downloadable content.
+type CourseAdminDTO struct {
+	ID                   string                  `json:"id"`
+	Title                string                  `json:"title"`
+	Description          string                  `json:"description"`
+	Thumbnail            *CourseMediaDTO         `json:"thumbnail"`
+	IntroductionVideoURL string                  `json:"introductionVideoUrl"`
+	RegistrationURL      string                  `json:"registrationUrl"`
+	DownloadableContent  []CourseMediaDTO        `json:"downloadableContent"`
+	Audiences            []string                `json:"audiences"`
+	Chapters             []CourseChapterAdminDTO `json:"chapters"`
+	CreatedAt            time.Time               `json:"createdAt"`
+	UpdatedAt            time.Time               `json:"updatedAt"`
 }
 
 // ChapterInput is parsed from the chaptersJson form field.

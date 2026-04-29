@@ -4,7 +4,6 @@ import (
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/dto"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/models"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/pkg/utils"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -12,19 +11,12 @@ type Service struct {
 	db *gorm.DB
 }
 
-func normalizeTags(raw string) datatypes.JSON {
-	if raw == "" {
-		return datatypes.JSON("[]")
-	}
-	return datatypes.JSON(raw)
-}
-
 func (s *Service) CreatePodcast(o *dto.PodcastCreateDTO) error {
 	podcast := models.Podcast{
 		Title:       o.Title,
 		Link:        o.Link,
 		Description: &o.Description,
-		Tags:        normalizeTags(o.Tags),
+		Tags:        o.Tags,
 		Transcript:  o.Transcript,
 	}
 	if len(o.Audiences) > 0 {
@@ -103,7 +95,7 @@ func (s *Service) UpdatePodcast(id string, req *dto.PodcastUpdateDTO) error {
 	podcast.Title = req.Title
 	podcast.Link = req.Link
 	podcast.Description = &req.Description
-	podcast.Tags = normalizeTags(req.Tags)
+	podcast.Tags = req.Tags
 	podcast.Transcript = req.Transcript
 
 	var audiences []models.Audience
@@ -170,7 +162,7 @@ func (s *Service) GetPodcastById(id string) (*dto.PodcastDTO, error) {
 		Link:        podcast.Link,
 		Description: podcast.Description,
 		Transcript:  podcast.Transcript,
-		Tags:        string(podcast.Tags),
+		Tags:        podcast.Tags,
 		Audiences:   []string{},
 	}
 	for _, audience := range podcast.Audiences {

@@ -154,14 +154,20 @@ func (s *Service) upsertOIDCUser(provider string, claims *oidc.IDClaims, fallbac
 
 func (s *Service) Refresh(raw string) (*dto.AuthResponse, error) {
 	hashed := HashRefreshToken(raw)
-	var user models.User
-	if err := s.db.Where("refresh_token_hash = ?", hashed).First(&user).Error; err != nil {
-		return nil, ErrTokenExpiredOrInvalid
-	}
-	if user.RefreshTokenExpiry == nil || time.Now().After(*user.RefreshTokenExpiry) {
-		return nil, ErrTokenExpiredOrInvalid
-	}
-	return s.issueTokens(&user)
+	var resp *dto.AuthResponse
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		var user models.User
+		if err := tx.Where("refresh_token_hash = ?", hashed).First(&user).Error; err != nil {
+			return ErrTokenExpiredOrInvalid
+		}
+		if user.RefreshTokenExpiry == nil || time.Now().After(*user.RefreshTokenExpiry) {
+			return ErrTokenExpiredOrInvalid
+		}
+		var err error
+		resp, err = s.issueTokensTx(tx, &user)
+		return err
+	})
+	return resp, err
 }
 
 func (s *Service) Logout(raw string) error {
@@ -175,6 +181,10 @@ func (s *Service) Logout(raw string) error {
 }
 
 func (s *Service) issueTokens(user *models.User) (*dto.AuthResponse, error) {
+	return s.issueTokensTx(s.db, user)
+}
+
+func (s *Service) issueTokensTx(db *gorm.DB, user *models.User) (*dto.AuthResponse, error) {
 	accessToken, err := GenerateAccessToken(user.ID, user.Email, user.IsAdmin)
 	if err != nil {
 		return nil, err
@@ -184,7 +194,7 @@ func (s *Service) issueTokens(user *models.User) (*dto.AuthResponse, error) {
 		return nil, err
 	}
 	expiry := time.Now().Add(refreshTokenTTL)
-	if err := s.db.Model(user).Updates(map[string]any{
+	if err := db.Model(user).Updates(map[string]any{
 		"refresh_token_hash":   hashed,
 		"refresh_token_expiry": expiry,
 	}).Error; err != nil {

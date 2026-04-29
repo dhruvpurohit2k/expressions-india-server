@@ -33,7 +33,7 @@ export const EventColumns: ColumnDef<EventListData>[] = [
   {
     accessorKey: "startDate",
     header: "Start Date",
-    cell: ({ row }) => format(row.original.startDate, "PPP"),
+    cell: ({ row }) => row.original.startDate ? format(row.original.startDate, "PPP") : "—",
   },
   {
     accessorKey: "endDate",

@@ -59,6 +59,37 @@ func (ctrl *Controller) Delete(c *gin.Context) {
 	utils.OK(c, nil)
 }
 
+func (ctrl *Controller) Create(c *gin.Context) {
+	var req dto.JournalCreateRequestDTO
+	if err := c.ShouldBind(&req); err != nil {
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
+		return
+	}
+	if err := ctrl.JournalService.CreateJournal(&req); err != nil {
+		utils.FailInternal(c, "CREATE_ERROR", "Failed to create journal", err)
+		return
+	}
+	utils.OK(c, nil)
+}
+
+func (ctrl *Controller) Update(c *gin.Context) {
+	id := c.Param("id")
+	var req dto.JournalUpdateRequestDTO
+	if err := c.ShouldBind(&req); err != nil {
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
+		return
+	}
+	if err := ctrl.JournalService.UpdateJournal(id, &req); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			utils.Fail(c, http.StatusNotFound, "NOT_FOUND", "Journal not found")
+			return
+		}
+		utils.FailInternal(c, "UPDATE_ERROR", "Failed to update journal", err)
+		return
+	}
+	utils.OK(c, nil)
+}
+
 // GetAll returns every journal with full chapter data (used by public API).
 func (ctrl *Controller) GetAll(c *gin.Context) {
 	journals, err := ctrl.JournalService.GetAllJournals()

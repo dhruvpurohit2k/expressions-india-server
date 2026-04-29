@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +19,7 @@ type Podcast struct {
 	Title       string         `gorm:"not null" json:"title"`
 	Link        string         `gorm:"not null" json:"link"`
 	Description *string        `json:"description"`
-	Tags        datatypes.JSON `json:"tags"`
+	Tags        string         `gorm:"type:text" json:"tags"`
 	Transcript  *string        `json:"transcript"`
 	Audiences   []Audience     `gorm:"many2many:podcast_audience;" json:"audience"`
 	CreatedAt   time.Time      `gorm:"not null" json:"createdAt"`

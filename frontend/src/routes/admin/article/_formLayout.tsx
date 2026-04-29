@@ -105,7 +105,7 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
               }}
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Title</Label>
+                  <Label htmlFor={field.name}>Title <span className="text-destructive">*</span></Label>
                   <Input
                     id={field.name}
                     value={field.state.value}
@@ -135,7 +135,7 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
               }}
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Category</Label>
+                  <Label htmlFor={field.name}>Category <span className="text-destructive">*</span></Label>
                   <Input
                     id={field.name}
                     value={field.state.value}
@@ -240,7 +240,7 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
               }}
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Content</Label>
+                  <Label htmlFor={field.name}>Content <span className="text-destructive">*</span></Label>
                   <Textarea
                     id={field.name}
                     value={field.state.value}

@@ -27,7 +27,7 @@ export const JournalChapterSchema = z.object({
   id: z.uuid(),
   title: z.string(),
   description: z.string().nullable(),
-  media: MediaSchema,
+  media: MediaSchema.nullable(),
   authors: z.array(AuthorSchema),
 });
 export type JournalChapter = z.infer<typeof JournalChapterSchema>;
@@ -41,7 +41,7 @@ export const JournalSchema = z.object({
   year: z.number(),
   volume: z.number(),
   issue: z.number(),
-  media: MediaSchema,
+  media: MediaSchema.nullable(),
   chapters: z.array(JournalChapterSchema),
 });
 

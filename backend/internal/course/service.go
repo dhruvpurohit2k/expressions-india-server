@@ -31,11 +31,16 @@ func (s *Service) GetCoursesListFiltered(filter utils.CourseFilter) ([]dto.Cours
 
 	if filter.Audiences != "" {
 		names := []string{}
+		seen := map[string]bool{}
 		for _, a := range strings.Split(filter.Audiences, ",") {
 			a = strings.TrimSpace(a)
-			if a != "" {
+			if a != "" && !seen[a] {
 				names = append(names, a)
+				seen[a] = true
 			}
+		}
+		if len(names) > 0 && !seen["all"] {
+			names = append(names, "all")
 		}
 		if len(names) > 0 {
 			subquery := s.db.Table("course_audience").
@@ -153,6 +158,71 @@ func (s *Service) GetCoursesList() ([]dto.CourseListItemDTO, error) {
 		courseList = append(courseList, item)
 	}
 	return courseList, nil
+}
+
+// GetCourseByIdAdmin returns a course with full chapter data (description,
+// video URL, and downloadable content) — used by the admin edit form.
+func (s *Service) GetCourseByIdAdmin(id string) (*dto.CourseAdminDTO, error) {
+	var course models.Course
+	if err := s.db.Where("id = ?", id).
+		Preload("Audiences").
+		Preload("Thumbnail").
+		Preload("IntroductionVideo").
+		Preload("DownloadableContent").
+		Preload("Chapters").
+		Preload("Chapters.VideoLink").
+		Preload("Chapters.DownloadableContent").
+		First(&course).Error; err != nil {
+		return nil, err
+	}
+
+	result := &dto.CourseAdminDTO{
+		ID:                  course.ID,
+		Title:               course.Title,
+		Description:         course.Description,
+		CreatedAt:           course.CreatedAt,
+		UpdatedAt:           course.UpdatedAt,
+		Audiences:           []string{},
+		DownloadableContent: []dto.CourseMediaDTO{},
+		Chapters:            []dto.CourseChapterAdminDTO{},
+	}
+	if course.ThumbnailID != "" {
+		result.Thumbnail = &dto.CourseMediaDTO{
+			ID: course.Thumbnail.ID, Name: course.Thumbnail.Name,
+			URL: course.Thumbnail.URL, FileType: course.Thumbnail.FileType,
+		}
+	}
+	if course.IntroductionVideoID != "" {
+		result.IntroductionVideoURL = course.IntroductionVideo.URL
+	}
+	result.RegistrationURL = course.RegistrationURL
+	for _, a := range course.Audiences {
+		result.Audiences = append(result.Audiences, a.Name)
+	}
+	for _, m := range course.DownloadableContent {
+		result.DownloadableContent = append(result.DownloadableContent, dto.CourseMediaDTO{
+			ID: m.ID, Name: m.Name, URL: m.URL, FileType: m.FileType,
+		})
+	}
+	for _, ch := range course.Chapters {
+		chDTO := dto.CourseChapterAdminDTO{
+			ID:                  ch.ID,
+			Title:               ch.Title,
+			Description:         ch.Description,
+			IsFree:              ch.IsFree,
+			DownloadableContent: []dto.CourseMediaDTO{},
+		}
+		if ch.VideoLinkID != "" {
+			chDTO.VideoLinkURL = ch.VideoLink.URL
+		}
+		for _, m := range ch.DownloadableContent {
+			chDTO.DownloadableContent = append(chDTO.DownloadableContent, dto.CourseMediaDTO{
+				ID: m.ID, Name: m.Name, URL: m.URL, FileType: m.FileType,
+			})
+		}
+		result.Chapters = append(result.Chapters, chDTO)
+	}
+	return result, nil
 }
 
 func (s *Service) GetCourseById(id string) (*dto.CourseDTO, error) {

@@ -31,7 +31,7 @@ func (ctrl *Controller) GetAll(c *gin.Context) {
 func (ctrl *Controller) Create(c *gin.Context) {
 	var newEvent dto.EventCreateRequestDTO
 	if err := c.ShouldBind(&newEvent); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.CreateEvent(&newEvent); err != nil {
@@ -44,7 +44,7 @@ func (ctrl *Controller) Create(c *gin.Context) {
 func (ctrl *Controller) GetEventList(c *gin.Context) {
 	var filter utils.Filter
 	if err := c.ShouldBindQuery(&filter); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	events, total, err := ctrl.service.GetEventList(filter)
@@ -63,7 +63,7 @@ func (ctrl *Controller) Update(c *gin.Context) {
 	id := c.Param("id")
 	var updateEvent dto.EventUpdateRequestDTO
 	if err := c.ShouldBind(&updateEvent); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.UpdateEvent(id, &updateEvent); err != nil {

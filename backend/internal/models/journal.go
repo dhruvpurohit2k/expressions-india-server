@@ -17,7 +17,7 @@ type Journal struct {
 	Volume      int              `gorm:"not null" json:"volume"`
 	Issue       int              `gorm:"not null" json:"issue"`
 	MediaId     *string          `json:"-"`
-	Media       Media            `gorm:"foreignKey:MediaId" json:"media"`
+	Media       *Media           `gorm:"foreignKey:MediaId" json:"media"`
 	Chapters    []JournalChapter `gorm:"foreignKey:JournalId" json:"chapters"`
 	CreatedAt   time.Time        `gorm:"not null" json:"createdAt"`
 	UpdatedAt   time.Time        `gorm:"not null" json:"updatedAt"`
@@ -29,7 +29,7 @@ type JournalChapter struct {
 	Journal     *Journal `gorm:"foreignKey:JournalId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
 	Title       string   `gorm:"not null" json:"title"`
 	MediaId     *string  `gorm:"type:uuid" json:"-"`
-	Media       Media    `gorm:"foreignKey:MediaId" json:"media"`
+	Media       *Media   `gorm:"foreignKey:MediaId" json:"media"`
 	Description *string  `json:"description"`
 	Authors     []Author `gorm:"many2many:journal_chapter_authors" json:"authors"`
 }

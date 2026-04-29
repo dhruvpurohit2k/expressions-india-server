@@ -66,7 +66,7 @@ func seedEvent(t *testing.T, db *gorm.DB, title, status string, startDate time.T
 	t.Helper()
 	ev := models.Event{
 		Title:     title,
-		StartDate: startDate,
+		StartDate: &startDate,
 		Status:    &status,
 	}
 	if err := db.Create(&ev).Error; err != nil {

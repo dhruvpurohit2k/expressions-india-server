@@ -150,7 +150,7 @@ func SeedJournal(s *Server, filePath string) error {
 		chapters[0] = models.JournalChapter{
 			Title:   "Preface",
 			Authors: nil,
-			Media:   *prefaceMedia,
+			Media:   prefaceMedia,
 		}
 		for i, chapter := range seed.Chapters {
 			authors := make([]models.Author, len(chapter.Authors))
@@ -169,7 +169,7 @@ func SeedJournal(s *Server, filePath string) error {
 			chapters[i+1] = models.JournalChapter{
 				Title:   chapter.Name,
 				Authors: authors,
-				Media:   *media,
+				Media:   media,
 			}
 		}
 		journal := models.Journal{
@@ -178,7 +178,7 @@ func SeedJournal(s *Server, filePath string) error {
 			EndMonth:   endTime.Month().String(),
 			Year:       startTime.Year(),
 			Volume:     seed.Volume,
-			Media:      *wholePaper,
+			Media:      wholePaper,
 			Issue:      seed.Issue,
 			Chapters:   chapters,
 		}
@@ -258,17 +258,13 @@ func SeedPodcasts(s *Server, filePath string) error {
 
 	for _, d := range podcastSeeds {
 		podcastID, _ := uuid.NewV7()
-		var tagsBlob datatypes.JSON
-		if d.Tags != "" {
-			tagsBlob = datatypes.JSON([]byte(d.Tags))
-		}
 
 		podcast := &models.Podcast{
 			ID:          podcastID.String(),
 			Title:       d.Title,
 			Link:        d.Link,
 			Description: d.Description,
-			Tags:        tagsBlob,
+			Tags:        d.Tags,
 			Transcript:  d.Transcript,
 			Audiences:   []models.Audience{allAudience},
 		}

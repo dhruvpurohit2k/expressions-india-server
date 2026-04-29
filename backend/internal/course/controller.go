@@ -84,6 +84,21 @@ func (ctrl *Controller) GetCourseById(c *gin.Context) {
 	utils.OK(c, course)
 }
 
+// GetCourseByIdAdmin returns a course with full chapter data for the admin form.
+func (ctrl *Controller) GetCourseByIdAdmin(c *gin.Context) {
+	id := c.Param("id")
+	course, err := ctrl.service.GetCourseByIdAdmin(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			utils.Fail(c, http.StatusNotFound, "NOT_FOUND", "Course not found")
+		} else {
+			utils.FailInternal(c, "FETCH_ERROR", "Failed to fetch course", err)
+		}
+		return
+	}
+	utils.OK(c, course)
+}
+
 func (ctrl *Controller) GetChapterById(c *gin.Context) {
 	courseId := c.Param("id")
 	chapterId := c.Param("chapterId")
@@ -123,7 +138,7 @@ func (ctrl *Controller) GetChapterById(c *gin.Context) {
 func (ctrl *Controller) Create(c *gin.Context) {
 	var req dto.CourseCreateRequestDTO
 	if err := c.ShouldBind(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.CreateCourse(&req); err != nil {
@@ -137,7 +152,7 @@ func (ctrl *Controller) Update(c *gin.Context) {
 	id := c.Param("id")
 	var req dto.CourseCreateRequestDTO
 	if err := c.ShouldBind(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.UpdateCourse(id, &req); err != nil {

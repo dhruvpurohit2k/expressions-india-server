@@ -90,7 +90,7 @@ func (ctrl *Controller) GetArticleById(c *gin.Context) {
 func (ctrl *Controller) Create(c *gin.Context) {
 	var req dto.ArticleCreateRequestDTO
 	if err := c.ShouldBind(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.CreateArticle(&req); err != nil {
@@ -113,7 +113,7 @@ func (ctrl *Controller) Update(c *gin.Context) {
 	id := c.Param("id")
 	var req dto.ArticleUpdateRequestDTO
 	if err := c.ShouldBind(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", err.Error())
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.UpdateArticle(id, &req); err != nil {

@@ -164,6 +164,10 @@ func initServer() *Server {
 		}
 		corsConfig.AllowOrigins = parts
 	} else {
+		appEnv := os.Getenv("APP_ENV")
+		if appEnv != "dev" && appEnv != "development" {
+			log.Fatal("ALLOWED_ORIGINS must be set in non-development environments")
+		}
 		// Dev fallback: allow common local dev servers.
 		corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:8081"}
 	}
@@ -227,6 +231,8 @@ func (s *Server) SetupRoutes() {
 
 		groupAdmin.GET("/journal", s.journalController.GetList)
 		groupAdmin.GET("/journal/:id", s.journalController.GetById)
+		groupAdmin.POST("/journal", s.journalController.Create)
+		groupAdmin.PUT("/journal/:id", s.journalController.Update)
 		groupAdmin.DELETE("/journal/:id", s.journalController.Delete)
 		groupAdmin.GET("/promotion", s.promotionController.Get)
 		groupAdmin.GET("/promotion/:id", s.promotionController.GetById)
@@ -254,7 +260,7 @@ func (s *Server) SetupRoutes() {
 		groupAdmin.DELETE("/article/:id", s.articleController.Delete)
 
 		groupAdmin.GET("/course", s.courseController.GetCoursesListAdmin)
-		groupAdmin.GET("/course/:id", s.courseController.GetCourseById)
+		groupAdmin.GET("/course/:id", s.courseController.GetCourseByIdAdmin)
 		groupAdmin.POST("/course", s.courseController.Create)
 		groupAdmin.PUT("/course/:id", s.courseController.Update)
 		groupAdmin.DELETE("/course/:id", s.courseController.Delete)

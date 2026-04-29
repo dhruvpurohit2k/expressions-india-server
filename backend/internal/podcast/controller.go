@@ -95,7 +95,7 @@ func (ctrl *Controller) Update(c *gin.Context) {
 	id := c.Param("id")
 	var req dto.PodcastUpdateDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "BAD_REQUEST", "Invalid input")
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.UpdatePodcast(id, &req); err != nil {
@@ -112,7 +112,7 @@ func (ctrl *Controller) Update(c *gin.Context) {
 func (ctrl *Controller) Create(c *gin.Context) {
 	var req dto.PodcastCreateDTO
 	if err := c.ShouldBind(&req); err != nil {
-		utils.Fail(c, http.StatusBadRequest, "BAD_REQUEST", "Invalid input")
+		utils.Fail(c, http.StatusBadRequest, "INVALID_DATA", utils.FormatBindError(err))
 		return
 	}
 	if err := ctrl.service.CreatePodcast(&req); err != nil {

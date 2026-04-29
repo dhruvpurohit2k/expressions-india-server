@@ -21,8 +21,8 @@ const CourseMediaSchema = z.object({
 const CourseChapterSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string().optional(),
-  videoLinkUrl: z.string().optional(),
+  description: z.string().nullish().transform((v) => v ?? ""),
+  videoLinkUrl: z.string().nullish().transform((v) => v ?? ""),
   isFree: z.boolean(),
   downloadableContent: z.array(CourseMediaSchema).nullish().transform((v) => v ?? []),
 });

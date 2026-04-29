@@ -57,9 +57,10 @@ func TestGetLatestActivity_WithEvents(t *testing.T) {
 	// Seed events directly to avoid S3 dependency.
 	status := "upcoming"
 	for i := 0; i < 3; i++ {
+		sd := time.Now().Add(time.Duration(i+1) * 24 * time.Hour)
 		ev := models.Event{
 			Title:     "Event",
-			StartDate: time.Now().Add(time.Duration(i+1) * 24 * time.Hour),
+			StartDate: &sd,
 			Status:    &status,
 		}
 		if err := db.Create(&ev).Error; err != nil {
@@ -93,9 +94,10 @@ func TestGetLatestActivity_LimitedToFive(t *testing.T) {
 	// Seed 7 events; the service limits to 5.
 	status := "upcoming"
 	for i := 0; i < 7; i++ {
+		sd := time.Now().Add(time.Duration(i+1) * 24 * time.Hour)
 		ev := models.Event{
 			Title:     "Event",
-			StartDate: time.Now().Add(time.Duration(i+1) * 24 * time.Hour),
+			StartDate: &sd,
 			Status:    &status,
 		}
 		if err := db.Create(&ev).Error; err != nil {
@@ -119,7 +121,8 @@ func TestGetLatestActivity_MixedContentTypes(t *testing.T) {
 
 	// Seed one of each content type.
 	status := "upcoming"
-	db.Create(&models.Event{Title: "E1", StartDate: time.Now(), Status: &status})
+	now := time.Now()
+	db.Create(&models.Event{Title: "E1", StartDate: &now, Status: &status})
 	db.Create(&models.Article{Title: "A1"})
 	db.Create(&models.Podcast{Title: "P1"})
 
