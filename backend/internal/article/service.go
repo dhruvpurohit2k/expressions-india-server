@@ -31,8 +31,8 @@ func (s *Service) GetArticleList(filter utils.ArticleFilter) ([]dto.ArticleListI
 	if filter.Search != "" {
 		base = base.Where("LOWER(title) LIKE LOWER(?)", "%"+filter.Search+"%")
 	}
-	if filter.Category != "" {
-		base = base.Where("LOWER(category) LIKE LOWER(?)", "%"+filter.Category+"%")
+	if filter.Author != "" {
+		base = base.Where("LOWER(author) LIKE LOWER(?)", "%"+filter.Author+"%")
 	}
 
 	if err := base.Count(&total).Error; err != nil {
@@ -53,7 +53,7 @@ func (s *Service) GetArticleList(filter utils.ArticleFilter) ([]dto.ArticleListI
 		item := dto.ArticleListItemDTO{
 			ID:          article.ID,
 			Title:       article.Title,
-			Category:    article.Category,
+			Author:       article.Author,
 			PublishedAt: article.CreatedAt,
 		}
 		if len(article.Medias) > 0 {
@@ -81,7 +81,7 @@ func (s *Service) GetArticleListPaginated(limit int, offset int) ([]dto.ArticleL
 		item := dto.ArticleListItemDTO{
 			ID:          article.ID,
 			Title:       article.Title,
-			Category:    article.Category,
+			Author:       article.Author,
 			PublishedAt: article.CreatedAt,
 		}
 		if len(article.Medias) > 0 {
@@ -114,7 +114,7 @@ func (s *Service) GetArticlesByAudience(audience string, limit int, offset int) 
 		item := dto.ArticleListItemDTO{
 			ID:          a.ID,
 			Title:       a.Title,
-			Category:    a.Category,
+			Author:       a.Author,
 			PublishedAt: a.CreatedAt,
 		}
 		if len(a.Medias) > 0 {
@@ -137,7 +137,7 @@ func (s *Service) GetArticleById(id string) (*dto.ArticleDTO, error) {
 		ID:        article.ID,
 		Title:     article.Title,
 		Content:   article.Content,
-		Category:  article.Category,
+		Author:    article.Author,
 		Audience:  article.Audience,
 		Medias:    article.Medias,
 		CreatedAt: article.CreatedAt,
@@ -149,7 +149,7 @@ func (s *Service) CreateArticle(data *dto.ArticleCreateRequestDTO) (retErr error
 	article := models.Article{
 		Title:    data.Title,
 		Content:  data.Content,
-		Category: data.Category,
+		Author:   nilIfEmptyStr(data.Author),
 	}
 
 	if len(data.Audiences) > 0 {
@@ -187,7 +187,7 @@ func (s *Service) UpdateArticle(id string, data *dto.ArticleUpdateRequestDTO) er
 	}
 	article.Title = data.Title
 	article.Content = data.Content
-	article.Category = data.Category
+	article.Author = nilIfEmptyStr(data.Author)
 
 	if len(data.Audiences) > 0 {
 		audiences, err := s.resolveAudiences(data.Audiences)
@@ -297,4 +297,11 @@ func (s *Service) uploadMediaFiles(files []*multipart.FileHeader) ([]models.Medi
 		return nil, err
 	}
 	return medias, nil
+}
+
+func nilIfEmptyStr(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
 }

@@ -14,8 +14,9 @@ export const ArticleColumns: ColumnDef<ArticleListItem>[] = [
     header: "Title",
   },
   {
-    accessorKey: "category",
-    header: "Category",
+    accessorKey: "author",
+    header: "Author",
+    cell: ({ row }) => row.original.author ?? "—",
   },
   {
     accessorKey: "publishedAt",

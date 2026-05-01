@@ -10,16 +10,16 @@ import (
 type ArticleListItemDTO struct {
 	ID           string    `json:"id"`
 	Title        string    `json:"title"`
-	Category     string    `json:"category"`
+	Author       *string   `json:"author"`
 	ThumbnailURL *string   `json:"thumbnailUrl"`
 	PublishedAt  time.Time `json:"publishedAt"`
 }
 
 type ArticleDTO struct {
-	ID        string          `json:"id"`
-	Title     string          `json:"title"`
-	Content   string          `json:"content"`
-	Category  string          `json:"category"`
+	ID        string            `json:"id"`
+	Title     string            `json:"title"`
+	Content   string            `json:"content"`
+	Author    *string           `json:"author"`
 	Audience  []models.Audience `json:"audience"`
 	Medias    []models.Media    `json:"medias"`
 	CreatedAt time.Time         `json:"createdAt"`
@@ -29,16 +29,16 @@ type ArticleDTO struct {
 type ArticleCreateRequestDTO struct {
 	Title     string                  `form:"title" binding:"required"`
 	Content   string                  `form:"content" binding:"required"`
-	Category  string                  `form:"category" binding:"required"`
+	Author    string                  `form:"author"`
 	Audiences []string                `form:"audiences"`
 	Medias    []*multipart.FileHeader `form:"medias"`
 }
 
 type ArticleUpdateRequestDTO struct {
-	Title          string                  `form:"title" binding:"required"`
-	Content        string                  `form:"content" binding:"required"`
-	Category       string                  `form:"category" binding:"required"`
-	Audiences      []string                `form:"audiences"`
-	Medias         []*multipart.FileHeader `form:"medias"`
-	DeletedMediaIds []string               `form:"deletedMediaIds"`
+	Title           string                  `form:"title" binding:"required"`
+	Content         string                  `form:"content" binding:"required"`
+	Author          string                  `form:"author"`
+	Audiences       []string                `form:"audiences"`
+	Medias          []*multipart.FileHeader `form:"medias"`
+	DeletedMediaIds []string                `form:"deletedMediaIds"`
 }

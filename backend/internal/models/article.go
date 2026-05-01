@@ -12,6 +12,7 @@ type Article struct {
 	Title     string     `json:"title"`
 	Content   string     `json:"content"`
 	Category  string     `json:"category"`
+	Author    *string    `json:"author"`
 	Audience []Audience `gorm:"many2many:article_audience;" json:"audience"`
 	Medias   []Media    `gorm:"many2many:article_media;" json:"medias"`
 	CreatedAt time.Time  `json:"createdAt"`

@@ -53,9 +53,9 @@ func metaTotal(resp map[string]any) float64 {
 	return total
 }
 
-func seedArticle(t *testing.T, db *gorm.DB, title, category string) string {
+func seedArticle(t *testing.T, db *gorm.DB, title string) string {
 	t.Helper()
-	a := models.Article{Title: title, Category: category}
+	a := models.Article{Title: title}
 	if err := db.Create(&a).Error; err != nil {
 		t.Fatalf("seed article %q: %v", title, err)
 	}
@@ -85,8 +85,8 @@ func TestGetArticleList_Empty(t *testing.T) {
 
 func TestGetArticleList_WithData(t *testing.T) {
 	r, db := setupRouter(t)
-	seedArticle(t, db, "Mental Health 101", "health")
-	seedArticle(t, db, "Study Tips", "education")
+	seedArticle(t, db, "Mental Health 101")
+	seedArticle(t, db, "Study Tips")
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/admin/article", nil)
@@ -103,8 +103,8 @@ func TestGetArticleList_WithData(t *testing.T) {
 
 func TestGetArticleList_SearchFilter(t *testing.T) {
 	r, db := setupRouter(t)
-	seedArticle(t, db, "Mental Health 101", "health")
-	seedArticle(t, db, "Study Tips", "education")
+	seedArticle(t, db, "Mental Health 101")
+	seedArticle(t, db, "Study Tips")
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/admin/article?search=mental", nil)
@@ -132,7 +132,7 @@ func TestGetArticleById_Admin_NotFound(t *testing.T) {
 
 func TestGetArticleById_Admin_Success(t *testing.T) {
 	r, db := setupRouter(t)
-	id := seedArticle(t, db, "Test Article", "general")
+	id := seedArticle(t, db, "Test Article")
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", fmt.Sprintf("/admin/article/%s", id), nil)
@@ -171,8 +171,8 @@ func TestGetArticleListPaginated_Empty(t *testing.T) {
 
 func TestGetArticleListPaginated_WithData(t *testing.T) {
 	r, db := setupRouter(t)
-	seedArticle(t, db, "Article 1", "cat1")
-	seedArticle(t, db, "Article 2", "cat2")
+	seedArticle(t, db, "Article 1")
+	seedArticle(t, db, "Article 2")
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/article?limit=10&offset=0", nil)

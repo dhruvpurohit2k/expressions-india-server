@@ -107,7 +107,7 @@ type PodcastFilter struct {
 
 type ArticleFilter struct {
 	Search    string `form:"search"`
-	Category  string `form:"category"`
+	Author    string `form:"author"`
 	SortOrder string `form:"sortOrder"` // asc | desc, default desc
 	Limit     int    `form:"limit,default=15"`
 	Offset    int    `form:"offset,default=0"`

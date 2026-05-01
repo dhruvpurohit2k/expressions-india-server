@@ -3,7 +3,7 @@ import { z } from "zod";
 export const ArticleListItemSchema = z.object({
   id: z.uuid(),
   title: z.string(),
-  category: z.string(),
+  author: z.string().nullable().optional(),
   thumbnailUrl: z.string().nullable().optional(),
   publishedAt: z.coerce.date(),
 });
@@ -20,7 +20,7 @@ export const ArticleSchema = z.object({
   id: z.uuid(),
   title: z.string(),
   content: z.string(),
-  category: z.string(),
+  author: z.string().nullable().optional(),
   audience: z.array(z.object({ name: z.string() })).default([]),
   medias: z.array(MediaSchema).default([]),
   createdAt: z.coerce.date(),

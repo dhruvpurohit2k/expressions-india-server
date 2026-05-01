@@ -36,8 +36,8 @@ function RouteComponent() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [category, setCategory] = useState("");
-  const [debouncedCategory, setDebouncedCategory] = useState("");
+  const [author, setAuthor] = useState("");
+  const [debouncedAuthor, setDebouncedAuthor] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const debouncedSetSearch = useDebouncedCallback((val: string) => {
@@ -45,8 +45,8 @@ function RouteComponent() {
     setPage(1);
   }, 350);
 
-  const debouncedSetCategory = useDebouncedCallback((val: string) => {
-    setDebouncedCategory(val);
+  const debouncedSetAuthor = useDebouncedCallback((val: string) => {
+    setDebouncedAuthor(val);
     setPage(1);
   }, 350);
 
@@ -55,23 +55,23 @@ function RouteComponent() {
     debouncedSetSearch(val);
   };
 
-  const handleCategory = (val: string) => {
-    setCategory(val);
-    debouncedSetCategory(val);
+  const handleAuthor = (val: string) => {
+    setAuthor(val);
+    debouncedSetAuthor(val);
   };
 
   const resetFilters = () => {
     setSearch("");
     setDebouncedSearch("");
-    setCategory("");
-    setDebouncedCategory("");
+    setAuthor("");
+    setDebouncedAuthor("");
     setSortOrder("desc");
     setPage(1);
   };
 
   const { data, isLoading, error } = useArticleListQuery({
     search: debouncedSearch || undefined,
-    category: debouncedCategory || undefined,
+    author: debouncedAuthor || undefined,
     sortOrder,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
@@ -81,7 +81,7 @@ function RouteComponent() {
   const totalPages = data?.meta.totalPages ?? 0;
   const total = data?.meta.total ?? 0;
 
-  const hasActiveFilters = !!debouncedSearch || !!debouncedCategory || sortOrder !== "desc";
+  const hasActiveFilters = !!debouncedSearch || !!debouncedAuthor || sortOrder !== "desc";
 
   return (
     <>
@@ -108,9 +108,9 @@ function RouteComponent() {
           />
 
           <Input
-            placeholder="Filter by category…"
-            value={category}
-            onChange={(e) => handleCategory(e.target.value)}
+            placeholder="Filter by author…"
+            value={author}
+            onChange={(e) => handleAuthor(e.target.value)}
             className="w-48"
           />
 

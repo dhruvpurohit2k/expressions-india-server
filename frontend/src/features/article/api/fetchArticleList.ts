@@ -3,7 +3,7 @@ import { ArticleListItemSchema } from "../types";
 
 export type ArticleListParams = {
   search?: string;
-  category?: string;
+  author?: string;
   sortOrder?: "asc" | "desc";
   limit?: number;
   offset?: number;
@@ -12,7 +12,7 @@ export type ArticleListParams = {
 export async function fetchArticleList(params: ArticleListParams = {}) {
   const query = new URLSearchParams();
   if (params.search) query.set("search", params.search);
-  if (params.category) query.set("category", params.category);
+  if (params.author) query.set("author", params.author);
   if (params.sortOrder) query.set("sortOrder", params.sortOrder);
   query.set("limit", String(params.limit ?? 15));
   query.set("offset", String(params.offset ?? 0));

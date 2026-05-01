@@ -47,7 +47,7 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
   const form = useForm({
     defaultValues: {
       title: article?.title ?? "",
-      category: article?.category ?? "",
+      author: article?.author ?? "",
       content: article?.content ?? "",
       audiences: article?.audience?.length ? article.audience.map((a) => a.name) : ["all"],
       medias: existingMedias as LocalMedia[],
@@ -56,7 +56,7 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
     onSubmit: async ({ value }) => {
       const fd = new FormData();
       fd.append("title", value.title);
-      fd.append("category", value.category);
+      if (value.author) fd.append("author", value.author);
       fd.append("content", value.content);
       const audiences = value.audiences.length ? value.audiences : ["all"];
       audiences.forEach((a) => fd.append("audiences", a));
@@ -124,32 +124,19 @@ export function ArticleForm({ article }: { article?: ArticleData }) {
               )}
             />
 
-            {/* Category */}
+            {/* Author */}
             <form.Field
-              name="category"
-              validators={{
-                onChange: ({ value }) => {
-                  const r = z.string().min(1, "Category is required").safeParse(value);
-                  return r.success ? undefined : r.error.issues[0].message;
-                },
-              }}
+              name="author"
               children={(field) => (
                 <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Category <span className="text-destructive">*</span></Label>
+                  <Label htmlFor={field.name}>Author</Label>
                   <Input
                     id={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="e.g. Mental Health, Education"
+                    placeholder="e.g. Dr. Priya Sharma"
                   />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-xs text-destructive">
-                      {field.state.meta.errors
-                        .map((e) => (typeof e === "string" ? e : (e as any).message))
-                        .join(", ")}
-                    </p>
-                  )}
                 </div>
               )}
             />
