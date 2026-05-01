@@ -619,7 +619,7 @@ func (s *Service) DeleteCourse(id string) error {
 	// Delete chapters
 	for _, ch := range course.Chapters {
 		if err := s.deleteChapter(&ch); err != nil {
-			log.Printf("failed to delete chapter %s: %v", ch.ID, err)
+			return fmt.Errorf("failed to delete chapter %s: %w", ch.ID, err)
 		}
 	}
 
@@ -630,7 +630,7 @@ func (s *Service) DeleteCourse(id string) error {
 		}
 	}
 	if err := s.db.Model(&course).Association("DownloadableContent").Clear(); err != nil {
-		log.Printf("failed to clear downloadable content: %v", err)
+		return fmt.Errorf("failed to clear downloadable content: %w", err)
 	}
 
 	// Delete thumbnail
@@ -641,7 +641,12 @@ func (s *Service) DeleteCourse(id string) error {
 	}
 
 	if err := s.db.Model(&course).Association("Audiences").Clear(); err != nil {
-		log.Printf("failed to clear audiences: %v", err)
+		return fmt.Errorf("failed to clear audiences: %w", err)
+	}
+
+	// Clear enrolled users (course_users join table) before deleting the course record
+	if err := s.db.Model(&course).Association("Users").Clear(); err != nil {
+		return fmt.Errorf("failed to clear enrolled users: %w", err)
 	}
 
 	return s.db.Delete(&course).Error

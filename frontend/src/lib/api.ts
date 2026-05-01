@@ -65,11 +65,14 @@ export async function apiFetch(
   if (res.status === 401 || res.status === 403) {
     const refreshed = await tryRefresh();
     if (!refreshed) {
+      // Refresh failed, but another tab may have just rotated the token and set
+      // a fresh ei_access cookie. Retry once before giving up.
+      const retryRes = await fetch(input, { ...init, credentials: "include" });
+      if (retryRes.status !== 401 && retryRes.status !== 403) return retryRes;
       clearAuth();
       const currentPath = window.location.pathname + window.location.search;
       window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
-      // Return the original response so callers don't throw before the redirect
-      return res;
+      return retryRes;
     }
     return fetch(input, { ...init, credentials: "include" });
   }
