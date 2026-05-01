@@ -75,7 +75,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Podcast deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: podcastKeys.all });
       navigate({ to: "/admin/podcast" });
     },
   });

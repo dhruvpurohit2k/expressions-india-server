@@ -59,7 +59,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Enquiry deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: enquiryKeys.all });
       navigate({ to: "/admin/enquiry" });
     },
   });

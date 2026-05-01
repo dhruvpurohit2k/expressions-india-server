@@ -65,7 +65,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Almanac deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: almanacKeys.all });
       navigate({ to: "/admin" });
     },
   });

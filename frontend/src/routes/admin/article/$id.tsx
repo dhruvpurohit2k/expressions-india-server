@@ -60,7 +60,6 @@ function RouteComponent() {
       await parseMutationResponse(response);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: articleKeys.all });
       navigate({ to: "/admin/article" });
     },
   });

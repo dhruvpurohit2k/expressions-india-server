@@ -52,7 +52,6 @@ function InfoCard({
 function RouteComponent() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: brochure, isLoading, error } = useBrochureQuery(id);
 
   const { mutate: deleteBrochure, isPending: isDeleting } = useMutation({
@@ -65,7 +64,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Brochure deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: brochureKeys.all });
       navigate({ to: "/admin" });
     },
   });

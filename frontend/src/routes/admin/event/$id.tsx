@@ -88,7 +88,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Event deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all });
       navigate({ to: "/admin/event" });
     },
   });

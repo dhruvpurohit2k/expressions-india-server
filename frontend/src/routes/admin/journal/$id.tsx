@@ -58,7 +58,6 @@ function RouteComponent() {
     },
     meta: { successMessage: "Journal deleted" },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: journalKeys.all });
       navigate({ to: "/admin/journal" });
     },
   });
