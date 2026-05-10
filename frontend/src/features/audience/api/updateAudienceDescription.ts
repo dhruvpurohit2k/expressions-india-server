@@ -5,7 +5,7 @@ export async function updateAudienceDescription(
   introduction: string,
 ) {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/audience/${id}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/audience/${id}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

@@ -31,6 +31,7 @@ COPY --from=frontend /frontend/dist        /usr/share/nginx/html
 COPY nginx/nginx.conf                      /etc/nginx/nginx.conf
 COPY nginx/nginx.http.conf                 /etc/nginx/nginx.http.conf
 COPY nginx/nginx.https.conf                /etc/nginx/nginx.https.conf
+COPY nginx/nginx.dev.conf                  /etc/nginx/nginx.dev.conf
 COPY supervisord.conf                      /etc/supervisord.conf
 COPY entrypoint.sh                         /entrypoint.sh
 RUN chmod +x /entrypoint.sh

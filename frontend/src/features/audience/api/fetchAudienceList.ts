@@ -4,7 +4,7 @@ import { AudienceListItemSchema } from "../types";
 
 export async function fetchAudienceList() {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/audience`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/audience`,
   );
   return parseApiResponse(response, z.array(AudienceListItemSchema));
 }

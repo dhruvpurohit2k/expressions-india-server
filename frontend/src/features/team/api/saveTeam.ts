@@ -9,8 +9,8 @@ export type TeamPayload = {
 
 export async function saveTeam(payload: TeamPayload, id?: string) {
   const url = id
-    ? `${import.meta.env.VITE_SERVER_URL}/admin/team/${id}`
-    : `${import.meta.env.VITE_SERVER_URL}/admin/team`;
+    ? `${import.meta.env.VITE_SERVER_URL}/api/admin/team/${id}`
+    : `${import.meta.env.VITE_SERVER_URL}/api/admin/team`;
   const response = await apiFetch(url, {
     method: id ? "PUT" : "POST",
     headers: { "Content-Type": "application/json" },

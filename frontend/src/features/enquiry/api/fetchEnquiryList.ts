@@ -18,7 +18,7 @@ export async function fetchEnquiryList(params: EnquiryListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/enquiry?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/enquiry?${query.toString()}`,
   );
   return parsePaginatedResponse(response, EnquiryListItemSchema);
 }

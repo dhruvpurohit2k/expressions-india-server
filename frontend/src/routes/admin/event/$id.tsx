@@ -81,7 +81,7 @@ function RouteComponent() {
   const { mutate: deleteEvent, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = await apiFetch(
-        `${import.meta.env.VITE_SERVER_URL}/admin/event/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/admin/event/${id}`,
         { method: "DELETE" },
       );
       await parseMutationResponse(response);

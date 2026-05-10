@@ -9,7 +9,7 @@ export interface CertApplicationPayload {
 
 export async function saveCertApplication(payload: CertApplicationPayload, id?: string) {
   const method = id ? "PUT" : "POST";
-  const url = `${import.meta.env.VITE_SERVER_URL}/admin/certificate-application${id ? `/${id}` : ""}`;
+  const url = `${import.meta.env.VITE_SERVER_URL}/api/admin/certificate-application${id ? `/${id}` : ""}`;
   const res = await apiFetch(url, {
     method,
     headers: { "Content-Type": "application/json" },

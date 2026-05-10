@@ -8,7 +8,7 @@ export function useDeleteCourse(id: string) {
   return useMutation({
     mutationFn: async () => {
       const response = await apiFetch(
-        `${import.meta.env.VITE_SERVER_URL}/admin/course/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/admin/course/${id}`,
         { method: "DELETE" },
       );
       await parseMutationResponse(response);

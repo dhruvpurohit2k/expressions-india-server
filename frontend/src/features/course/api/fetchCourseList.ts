@@ -20,7 +20,7 @@ export async function fetchCourseList(params: CourseListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/course?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/course?${query.toString()}`,
   );
   return parsePaginatedResponse(response, CourseListItemSchema);
 }

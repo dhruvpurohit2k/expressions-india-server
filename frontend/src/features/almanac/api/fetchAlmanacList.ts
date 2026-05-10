@@ -12,7 +12,7 @@ export async function fetchAlmanacList(params: AlmanacListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/almanac?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/almanac?${query.toString()}`,
   );
   return parsePaginatedResponse(response, AlmanacListItemSchema);
 }

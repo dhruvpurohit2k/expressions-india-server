@@ -18,14 +18,14 @@ function buildQuery(params: EnrollmentParams): string {
 
 export async function fetchEnrolledUsers(courseId: string, params: EnrollmentParams = {}) {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/course/${courseId}/enrolled${buildQuery(params)}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/course/${courseId}/enrolled${buildQuery(params)}`,
   );
   return parsePaginatedResponse(response, EnrolledUserSchema);
 }
 
 export async function fetchNotEnrolledUsers(courseId: string, params: EnrollmentParams = {}) {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/course/${courseId}/not-enrolled${buildQuery(params)}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/course/${courseId}/not-enrolled${buildQuery(params)}`,
   );
   return parsePaginatedResponse(response, EnrolledUserSchema);
 }

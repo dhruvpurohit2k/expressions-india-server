@@ -24,7 +24,7 @@ async function presignFiles(
   items: PresignRequestItem[],
 ): Promise<PresignResponseItem[]> {
   const res = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/upload/presign`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/upload/presign`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

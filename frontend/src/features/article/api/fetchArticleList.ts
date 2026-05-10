@@ -18,7 +18,7 @@ export async function fetchArticleList(params: ArticleListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/article?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/article?${query.toString()}`,
   );
   return parsePaginatedResponse(response, ArticleListItemSchema);
 }

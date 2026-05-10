@@ -22,7 +22,7 @@ export async function fetchEventList(params: EventListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/event?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/event?${query.toString()}`,
   );
   return parsePaginatedResponse(response, EventListSchema);
 }

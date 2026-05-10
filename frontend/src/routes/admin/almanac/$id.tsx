@@ -58,7 +58,7 @@ function RouteComponent() {
   const { mutate: deleteAlmanac, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = await apiFetch(
-        `${import.meta.env.VITE_SERVER_URL}/admin/almanac/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/admin/almanac/${id}`,
         { method: "DELETE" },
       );
       await parseMutationResponse(response);

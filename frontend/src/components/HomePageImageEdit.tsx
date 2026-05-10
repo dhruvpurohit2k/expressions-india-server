@@ -276,7 +276,7 @@ type ImageType = z.infer<typeof ImageSchema>;
 
 
 async function saveHomePageImages(formData: FormData) {
-  const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/admin/promotion`, {
+  const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/admin/promotion`, {
     method: "PUT",
     body: formData,
   });

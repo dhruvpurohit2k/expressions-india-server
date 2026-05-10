@@ -68,7 +68,7 @@ function RouteComponent() {
   const { mutate: deletePodcast, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = await apiFetch(
-        `${import.meta.env.VITE_SERVER_URL}/admin/podcast/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/admin/podcast/${id}`,
         { method: "DELETE" },
       );
       await parseMutationResponse(response);

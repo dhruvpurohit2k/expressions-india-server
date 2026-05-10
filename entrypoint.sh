@@ -7,6 +7,15 @@ CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
 
 mkdir -p /var/www/certbot
 
+# ── Dev mode: skip certbot, use plain HTTP config ──────────────────────────────
+if [ "${DEV:-false}" = "true" ]; then
+    echo "[entrypoint] DEV=true — skipping certbot, using HTTP-only config."
+    cp /etc/nginx/nginx.dev.conf /etc/nginx/nginx.conf
+    echo "[entrypoint] Starting supervisor..."
+    exec supervisord -c /etc/supervisord.conf
+fi
+
+# ── Production: obtain/reuse Let's Encrypt cert ────────────────────────────────
 if [ ! -f "$CERT_DIR/fullchain.pem" ]; then
     echo "[entrypoint] No certificate found — obtaining one for $DOMAIN..."
 

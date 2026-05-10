@@ -3,7 +3,7 @@ import { PodcastSchema } from "../types";
 
 export async function fetchPodcast(id: string) {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/podcast/${id}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/podcast/${id}`,
   );
   return parseApiResponse(response, PodcastSchema);
 }

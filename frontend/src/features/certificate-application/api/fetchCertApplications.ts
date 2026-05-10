@@ -4,7 +4,7 @@ import { CertApplicationSchema } from "../types";
 
 export async function fetchCertApplications() {
   const res = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/certificate-application`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/certificate-application`,
   );
   return parseApiResponse(res, z.array(CertApplicationSchema));
 }

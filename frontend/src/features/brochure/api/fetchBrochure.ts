@@ -3,7 +3,7 @@ import { parseApiResponse, apiFetch } from "#/lib/api";
 
 export async function fetchBrochure(id: string) {
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/brochure/${id}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/brochure/${id}`,
   );
   return parseApiResponse(response, BrochureSchema);
 }

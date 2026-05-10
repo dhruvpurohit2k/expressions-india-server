@@ -12,7 +12,7 @@ export async function fetchBrochureList(params: BrochureListParams = {}) {
   query.set("offset", String(params.offset ?? 0));
 
   const response = await apiFetch(
-    `${import.meta.env.VITE_SERVER_URL}/admin/brochure?${query.toString()}`,
+    `${import.meta.env.VITE_SERVER_URL}/api/admin/brochure?${query.toString()}`,
   );
   return parsePaginatedResponse(response, BrochureListItemSchema);
 }

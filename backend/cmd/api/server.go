@@ -214,7 +214,7 @@ func (s *Server) SetupRoutes() {
 		groupAuth.POST("/register", auth.RequireAdmin(), s.authController.Register)
 	}
 
-	groupAdmin := s.r.Group("/admin", auth.RequireAdmin())
+	groupAdmin := s.r.Group("/api/admin", auth.RequireAdmin())
 	{
 		groupAdmin.POST("/upload/presign", s.uploadController.Presign)
 
