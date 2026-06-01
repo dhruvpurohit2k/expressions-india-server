@@ -13,7 +13,11 @@ import { Label } from "#/components/ui/label";
 import { Textarea } from "#/components/ui/textarea";
 import { Spinner } from "#/components/ui/spinner";
 import { Skeleton } from "#/components/ui/skeleton";
-import { Popover, PopoverContent, PopoverTrigger } from "#/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "#/components/ui/popover";
 import { Calendar } from "#/components/ui/calendar";
 import {
   AlertDialog,
@@ -43,12 +47,16 @@ function RouteComponent() {
   const existing = data?.[0] ?? null;
   const [editing, setEditing] = useState(false);
 
-  if (isLoading) return <LoadingSkeleton onBack={() => navigate({ to: "/admin/course" })} />;
-  if (error) return (
-    <div className="px-2 lg:px-10 pt-6">
-      <p className="text-destructive text-sm">Failed to load certificate application.</p>
-    </div>
-  );
+  if (isLoading)
+    return <LoadingSkeleton onBack={() => navigate({ to: "/admin/course" })} />;
+  if (error)
+    return (
+      <div className="px-2 lg:px-10 pt-6">
+        <p className="text-destructive text-sm">
+          Failed to load certificate application.
+        </p>
+      </div>
+    );
 
   const showForm = !existing || editing;
 
@@ -59,7 +67,9 @@ function RouteComponent() {
           type="button"
           variant="ghost"
           size="icon"
-          onClick={() => editing ? setEditing(false) : navigate({ to: "/admin/course" })}
+          onClick={() =>
+            editing ? setEditing(false) : navigate({ to: "/admin/course" })
+          }
         >
           <ArrowLeft className="size-5" />
         </Button>
@@ -78,12 +88,19 @@ function RouteComponent() {
   );
 }
 
-function ExistingCard({ record, onEdit }: { record: CertApplication; onEdit: () => void }) {
+function ExistingCard({
+  record,
+  onEdit,
+}: {
+  record: CertApplication;
+  onEdit: () => void;
+}) {
   const queryClient = useQueryClient();
   const { mutateAsync: doDelete, isPending } = useMutation({
     mutationFn: () => deleteCertApplication(record.id),
     meta: { successMessage: "Deleted" },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: certApplicationKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: certApplicationKeys.all }),
   });
 
   return (
@@ -96,14 +113,22 @@ function ExistingCard({ record, onEdit }: { record: CertApplication; onEdit: () 
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" size="icon" className="text-destructive hover:text-destructive">
+              <Button
+                variant="outline"
+                size="icon"
+                className="text-destructive hover:text-destructive"
+              >
                 <Trash2 className="size-4" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete certificate application?</AlertDialogTitle>
-                <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+                <AlertDialogTitle>
+                  Delete certificate application?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This cannot be undone.
+                </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -121,7 +146,9 @@ function ExistingCard({ record, onEdit }: { record: CertApplication; onEdit: () 
       </div>
 
       <div className="space-y-1">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide">Form URL</p>
+        <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          Form URL
+        </p>
         <a
           href={record.formUrl}
           target="_blank"
@@ -134,13 +161,17 @@ function ExistingCard({ record, onEdit }: { record: CertApplication; onEdit: () 
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">Opens</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Opens
+          </p>
           <p className="text-sm">
             {record.openFrom ? format(record.openFrom, "dd MMM yyyy") : "—"}
           </p>
         </div>
         <div className="space-y-1">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">Closes</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Closes
+          </p>
           <p className="text-sm">
             {record.openUntil ? format(record.openUntil, "dd MMM yyyy") : "—"}
           </p>
@@ -149,7 +180,9 @@ function ExistingCard({ record, onEdit }: { record: CertApplication; onEdit: () 
 
       {record.closedMessage && (
         <div className="space-y-1">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">Closed message</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Closed message
+          </p>
           <p className="text-sm">{record.closedMessage}</p>
         </div>
       )}
@@ -166,11 +199,14 @@ function StatusBadge({ record }: { record: CertApplication }) {
   let label: string;
   let cls: string;
   if (record.openFrom && now < record.openFrom) {
-    label = "Upcoming"; cls = "text-yellow-600";
+    label = "Upcoming";
+    cls = "text-yellow-600";
   } else if (record.openUntil && now > record.openUntil) {
-    label = "Closed"; cls = "text-muted-foreground";
+    label = "Closed";
+    cls = "text-muted-foreground";
   } else {
-    label = "Open"; cls = "text-green-600";
+    label = "Open";
+    cls = "text-green-600";
   }
   return (
     <p className="text-sm font-medium">
@@ -201,8 +237,8 @@ function CertApplicationForm({
   const form = useForm({
     defaultValues: {
       formUrl: existing?.formUrl ?? "",
-      openFrom: existing?.openFrom ?? null as Date | null,
-      openUntil: existing?.openUntil ?? null as Date | null,
+      openFrom: existing?.openFrom ?? (null as Date | null),
+      openUntil: existing?.openUntil ?? (null as Date | null),
       closedMessage: existing?.closedMessage ?? "",
     },
     onSubmit: async ({ value }) => {
@@ -217,7 +253,11 @@ function CertApplicationForm({
 
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); form.handleSubmit(); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
       className="space-y-5 rounded-lg border bg-card p-6 shadow-sm"
     >
       {/* Form URL */}
@@ -241,7 +281,9 @@ function CertApplicationForm({
             />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">
-                {field.state.meta.errors.map((e) => typeof e === "string" ? e : (e as any).message).join(", ")}
+                {field.state.meta.errors
+                  .map((e) => (typeof e === "string" ? e : (e as any).message))
+                  .join(", ")}
               </p>
             )}
           </div>
@@ -260,17 +302,33 @@ function CertApplicationForm({
                   <Button
                     type="button"
                     variant="outline"
-                    className={cn("w-full justify-start text-left font-normal", !field.state.value && "text-muted-foreground")}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !field.state.value && "text-muted-foreground",
+                    )}
                   >
                     <CalendarIcon className="mr-2 size-4" />
-                    {field.state.value ? format(field.state.value, "PP") : "No date"}
+                    {field.state.value
+                      ? format(field.state.value, "PP")
+                      : "No date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={field.state.value ?? undefined} onSelect={(d) => field.handleChange(d ?? null)} autoFocus />
+                  <Calendar
+                    mode="single"
+                    selected={field.state.value ?? undefined}
+                    onSelect={(d) => field.handleChange(d ?? null)}
+                    autoFocus
+                  />
                   {field.state.value && (
                     <div className="p-2 border-t">
-                      <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => field.handleChange(null)}>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => field.handleChange(null)}
+                      >
                         Clear
                       </Button>
                     </div>
@@ -291,17 +349,33 @@ function CertApplicationForm({
                   <Button
                     type="button"
                     variant="outline"
-                    className={cn("w-full justify-start text-left font-normal", !field.state.value && "text-muted-foreground")}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !field.state.value && "text-muted-foreground",
+                    )}
                   >
                     <CalendarIcon className="mr-2 size-4" />
-                    {field.state.value ? format(field.state.value, "PP") : "No date"}
+                    {field.state.value
+                      ? format(field.state.value, "PP")
+                      : "No date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={field.state.value ?? undefined} onSelect={(d) => field.handleChange(d ?? null)} autoFocus />
+                  <Calendar
+                    mode="single"
+                    selected={field.state.value ?? undefined}
+                    onSelect={(d) => field.handleChange(d ?? null)}
+                    autoFocus
+                  />
                   {field.state.value && (
                     <div className="p-2 border-t">
-                      <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => field.handleChange(null)}>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => field.handleChange(null)}
+                      >
                         Clear
                       </Button>
                     </div>
@@ -319,14 +393,17 @@ function CertApplicationForm({
         children={(field) => (
           <div className="space-y-1.5">
             <Label htmlFor={field.name}>
-              Closed message <span className="text-muted-foreground font-normal">(optional)</span>
+              Closed message{" "}
+              <span className="text-muted-foreground font-normal">
+                (optional)
+              </span>
             </Label>
             <Textarea
               id={field.name}
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
-              placeholder='Leave blank to show "Check back later for certification applications."'
+              placeholder='Leave blank to show "Check back later for certificate applications."'
               rows={2}
             />
           </div>
@@ -336,8 +413,20 @@ function CertApplicationForm({
       <form.Subscribe
         selector={(s) => [s.canSubmit, s.isSubmitting] as const}
         children={([canSubmit, isSubmitting]) => (
-          <Button type="submit" disabled={!canSubmit} className="w-full rounded">
-            {isSubmitting ? <><Spinner /> Saving...</> : existing ? "Save Changes" : "Create"}
+          <Button
+            type="submit"
+            disabled={!canSubmit}
+            className="w-full rounded"
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner /> Saving...
+              </>
+            ) : existing ? (
+              "Save Changes"
+            ) : (
+              "Create"
+            )}
           </Button>
         )}
       />

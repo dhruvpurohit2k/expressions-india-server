@@ -102,7 +102,7 @@ func toPublicDTO(r models.CertificateApplication, now time.Time) dto.Certificate
 		if r.ClosedMessage != nil && *r.ClosedMessage != "" {
 			d.Message = *r.ClosedMessage
 		} else {
-			d.Message = "Check back later for certification applications."
+			d.Message = "Check back later for certificate applications."
 		}
 	}
 	return d

@@ -9,6 +9,7 @@ type CourseListItemDTO struct {
 	ID           string    `json:"id"`
 	Title        string    `json:"title"`
 	ThumbnailURL *string   `json:"thumbnailUrl"`
+	Price        *int      `json:"price"`
 	Audiences    []string  `json:"audiences"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
@@ -49,6 +50,7 @@ type CourseDTO struct {
 	Thumbnail            *CourseMediaDTO           `json:"thumbnail"`
 	IntroductionVideoURL string                    `json:"introductionVideoUrl"`
 	RegistrationURL      string                    `json:"registrationUrl"`
+	Price                *int                      `json:"price"`
 	DownloadableContent  []CourseMediaDTO          `json:"downloadableContent"`
 	Audiences            []string                  `json:"audiences"`
 	Chapters             []CourseChapterSummaryDTO `json:"chapters"`
@@ -65,6 +67,7 @@ type CourseAdminDTO struct {
 	Thumbnail            *CourseMediaDTO         `json:"thumbnail"`
 	IntroductionVideoURL string                  `json:"introductionVideoUrl"`
 	RegistrationURL      string                  `json:"registrationUrl"`
+	Price                *int                    `json:"price"`
 	DownloadableContent  []CourseMediaDTO        `json:"downloadableContent"`
 	Audiences            []string                `json:"audiences"`
 	Chapters             []CourseChapterAdminDTO `json:"chapters"`
@@ -90,6 +93,7 @@ type CourseCreateRequestDTO struct {
 	Audiences            []string `form:"audiences"`
 	IntroductionVideoUrl string   `form:"introductionVideoUrl"`
 	RegistrationURL      string   `form:"registrationUrl"`
+	Price                *int     `form:"price"` // price in INR (rupees), nil = free
 	// Pre-uploaded thumbnail (JSON-encoded UploadedMediaRef). Empty = no thumbnail.
 	ThumbnailUpload    string   `form:"thumbnailUpload"`
 	DeletedThumbnailId string   `form:"deletedThumbnailId"`

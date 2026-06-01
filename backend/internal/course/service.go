@@ -80,6 +80,7 @@ func (s *Service) GetCoursesListFiltered(filter utils.CourseFilter) ([]dto.Cours
 		item := dto.CourseListItemDTO{
 			ID:        course.ID,
 			Title:     course.Title,
+			Price:     course.Price,
 			CreatedAt: course.CreatedAt,
 			UpdatedAt: course.UpdatedAt,
 			Audiences: make([]string, 0, len(course.Audiences)),
@@ -120,6 +121,7 @@ func (s *Service) GetCoursesByAudience(audience string, limit int, offset int) (
 		item := dto.CourseListItemDTO{
 			ID:        course.ID,
 			Title:     course.Title,
+			Price:     course.Price,
 			CreatedAt: course.CreatedAt,
 			UpdatedAt: course.UpdatedAt,
 			Audiences: make([]string, 0, len(course.Audiences)),
@@ -145,6 +147,7 @@ func (s *Service) GetCoursesList() ([]dto.CourseListItemDTO, error) {
 		item := dto.CourseListItemDTO{
 			ID:        course.ID,
 			Title:     course.Title,
+			Price:     course.Price,
 			CreatedAt: course.CreatedAt,
 			UpdatedAt: course.UpdatedAt,
 			Audiences: make([]string, 0, len(course.Audiences)),
@@ -180,6 +183,7 @@ func (s *Service) GetCourseByIdAdmin(id string) (*dto.CourseAdminDTO, error) {
 		ID:                  course.ID,
 		Title:               course.Title,
 		Description:         course.Description,
+		Price:               course.Price,
 		CreatedAt:           course.CreatedAt,
 		UpdatedAt:           course.UpdatedAt,
 		Audiences:           []string{},
@@ -241,6 +245,7 @@ func (s *Service) GetCourseById(id string) (*dto.CourseDTO, error) {
 		ID:                  course.ID,
 		Title:               course.Title,
 		Description:         course.Description,
+		Price:               course.Price,
 		CreatedAt:           course.CreatedAt,
 		UpdatedAt:           course.UpdatedAt,
 		Audiences:           []string{},
@@ -377,6 +382,7 @@ func (s *Service) GetEnrolledCourses(userID string) ([]dto.CourseListItemDTO, er
 		item := dto.CourseListItemDTO{
 			ID:        course.ID,
 			Title:     course.Title,
+			Price:     course.Price,
 			CreatedAt: course.CreatedAt,
 			UpdatedAt: course.UpdatedAt,
 			Audiences: make([]string, 0, len(course.Audiences)),
@@ -436,6 +442,7 @@ func (s *Service) CreateCourse(data *dto.CourseCreateRequestDTO) error {
 	course := models.Course{
 		Title:       data.Title,
 		Description: data.Description,
+		Price:       data.Price,
 	}
 
 	if len(data.Audiences) > 0 {
@@ -512,6 +519,7 @@ func (s *Service) UpdateCourse(id string, data *dto.CourseCreateRequestDTO) erro
 
 	course.Title = data.Title
 	course.Description = data.Description
+	course.Price = data.Price
 
 	// Handle thumbnail
 	if data.DeletedThumbnailId != "" {

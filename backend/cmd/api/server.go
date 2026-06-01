@@ -23,6 +23,7 @@ import (
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/pkg/utils"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/podcast"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/promotion"
+	"github.com/dhruvpurohit2k/expressions-india-backend/internal/purchase"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/storage"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/team"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/upload"
@@ -51,6 +52,7 @@ type Server struct {
 	almanacController                *almanac.Controller
 	brochureController               *brochure.Controller
 	certificateApplicationController *certificateapplication.Controller
+	purchaseController               *purchase.Controller
 }
 
 func initServer() *Server {
@@ -150,6 +152,9 @@ func initServer() *Server {
 	certAppService := certificateapplication.NewService(db)
 	certAppController := certificateapplication.NewController(certAppService)
 
+	revenueCatClient := purchase.NewRevenueCatClient()
+	purchaseController := purchase.NewController(revenueCatClient, courseService)
+
 	r := gin.Default()
 	corsConfig := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -188,6 +193,7 @@ func initServer() *Server {
 		almanacController:                almanacController,
 		brochureController:               brochureController,
 		certificateApplicationController: certAppController,
+		purchaseController:               purchaseController,
 	}
 }
 
@@ -324,6 +330,11 @@ func (s *Server) SetupRoutes() {
 		groupApi.GET("/brochure/:id", s.brochureController.GetById)
 
 		groupApi.GET("/certificate-application", s.certificateApplicationController.GetPublic)
+
+		groupApi.POST("/course/:id/purchase", auth.RequireAuth(), s.purchaseController.PurchaseCourse)
 	}
+
+	// Webhooks — public endpoints with their own authentication (HMAC signatures).
+	s.r.POST("/api/webhooks/revenuecat", s.purchaseController.RevenueCatWebhook)
 
 }

@@ -31,6 +31,7 @@ type Course struct {
 	IntroductionVideoID string     `gorm:"type:uuid" json:"-"`
 	IntroductionVideo   Link       `gorm:"foreignKey:IntroductionVideoID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"introductionVideo"`
 	RegistrationURL     string     `gorm:"type:text" json:"registrationUrl"`
+	Price               *int       `gorm:"type:integer" json:"price"` // price in INR (rupees), nil = free
 	Audiences           []Audience      `gorm:"many2many:course_audience;" json:"audiences"`
 	Users               []User          `gorm:"many2many:course_users;" json:"users"`
 	Chapters            []CourseChapter `gorm:"foreignKey:CourseID" json:"chapters"`
