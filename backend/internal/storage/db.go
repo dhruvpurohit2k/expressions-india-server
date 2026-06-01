@@ -1,13 +1,14 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"github.com/glebarez/sqlite"
-	"gorm.io/driver/postgres"
+	_ "github.com/tursodatabase/libsql-client-go/libsql" // libSQL driver for Turso
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -27,24 +28,29 @@ func InitDB() *gorm.DB {
 		}
 
 		if env == "production" || env == "staging" {
-			sslMode := os.Getenv("DB_SSLMODE")
-			fmt.Println("USING POSTGRES")
-			if sslMode == "" {
-				sslMode = "require"
+			fmt.Println("USING TURSO (LIBSQL)")
+			tursoURL := os.Getenv("DB_URL")
+			authToken := os.Getenv("DB_AUTH_TOKEN")
+
+			if tursoURL == "" || authToken == "" {
+				log.Fatalf("DB_URL or DB_AUTH_TOKEN not set in environment variables")
 			}
-			dns := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&search_path=public",
-				os.Getenv("DB_USERNAME"),
-				os.Getenv("DB_PASSWORD"),
-				os.Getenv("DB_HOST"),
-				os.Getenv("DB_PORT"),
-				os.Getenv("DB_NAME"),
-				sslMode)
-			db, err = gorm.Open(postgres.Open(dns), &gorm.Config{
+
+			// Open raw sql connection using libsql driver
+			dsn := fmt.Sprintf("%s?authToken=%s", tursoURL, authToken)
+			sqlDB, connErr := sql.Open("libsql", dsn)
+			if connErr != nil {
+				err = connErr
+				continue
+			}
+
+			// Initialize GORM using the pure Go sqlite driver and the custom connection
+			db, err = gorm.Open(sqlite.Dialector{Conn: sqlDB}, &gorm.Config{
 				Logger:         logger.Default.LogMode(logger.Error),
 				TranslateError: true,
 			})
 		} else {
-			fmt.Println("USING SQLITE")
+			fmt.Println("USING SQLITE (LOCAL)")
 			db, err = gorm.Open(sqlite.Open("dev.db"), &gorm.Config{
 				Logger:         logger.Default.LogMode(logger.Info),
 				TranslateError: true,

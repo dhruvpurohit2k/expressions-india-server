@@ -53,9 +53,9 @@ func ByPaid(paid string) func(db *gorm.DB) *gorm.DB {
 func ByDateSort(sortOrder string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if sortOrder == "asc" {
-			return db.Order("start_date ASC")
+			return db.Order("COALESCE(start_date, end_date, created_at) ASC")
 		}
-		return db.Order("start_date DESC")
+		return db.Order("COALESCE(end_date, start_date, created_at) DESC")
 	}
 }
 

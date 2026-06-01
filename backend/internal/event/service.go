@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/dto"
 	"github.com/dhruvpurohit2k/expressions-india-backend/internal/models"
@@ -32,13 +33,14 @@ func (s *Service) GetUpcomingEvents(limit int, offset int) ([]dto.EventListItemD
 	var total int64
 
 	base := s.db.Model(&models.Event{}).
-		Where("status = ?", "upcoming")
+		Where("status = ?", "upcoming").
+		Where("start_date >= ? OR start_date IS NULL", time.Now())
 
 	if err := base.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	if err := base.Preload("Thumbnail").Order("start_date ASC NULLS LAST").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
+	if err := base.Preload("Thumbnail").Order("COALESCE(start_date, end_date, created_at) ASC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -69,7 +71,7 @@ func (s *Service) GetPastEvents(limit int, offset int) ([]dto.EventListItemDTO, 
 		return nil, 0, err
 	}
 
-	if err := base.Preload("Thumbnail").Order("end_date DESC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
+	if err := base.Preload("Thumbnail").Order("COALESCE(end_date, start_date, created_at) DESC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -109,6 +111,7 @@ func (s *Service) GetUpcomingEventsByAudience(audience string, limit int, offset
 
 	base := s.db.Model(&models.Event{}).
 		Where("status = ?", "upcoming").
+		Where("start_date >= ? OR start_date IS NULL", time.Now()).
 		Where(
 			"events.id IN (SELECT ea.event_id FROM event_audience ea JOIN audiences a ON a.id = ea.audience_id WHERE a.name = ? OR a.name = 'all') OR events.id NOT IN (SELECT DISTINCT ea.event_id FROM event_audience ea)",
 			audience,
@@ -117,7 +120,7 @@ func (s *Service) GetUpcomingEventsByAudience(audience string, limit int, offset
 	if err := base.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	if err := base.Preload("Thumbnail").Order("start_date ASC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
+	if err := base.Preload("Thumbnail").Order("COALESCE(start_date, end_date, created_at) ASC").Limit(limit).Offset(offset).Find(&events).Error; err != nil {
 		return nil, 0, err
 	}
 

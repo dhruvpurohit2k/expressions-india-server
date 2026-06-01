@@ -56,6 +56,9 @@ type Server struct {
 }
 
 func initServer() *Server {
+	if env := os.Getenv("APP_ENV"); env == "production" || env == "staging" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	fmt.Println("INITDB STARTING")
 	db := storage.InitDB()
 	s3 := storage.InitS3()
